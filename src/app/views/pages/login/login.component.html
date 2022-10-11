@@ -1,20 +1,27 @@
 <div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+
   <c-container>
     <c-row class="justify-content-center">
       <c-col md="8">
         <c-card-group>
           <c-card class="p-4">
             <c-card-body>
-              <form cForm>
-                <h1>Login</h1>
-                <p class="text-medium-emphasis">Sign In to your account</p>
-                <c-input-group class="mb-3">
+              <form [formGroup]="signinForm" cForm  (submit)="signIn()">
+                <h1 class="login-font-bold">Login</h1>
+                <p class="login-font">Sign In to your account</p>
+
+                <c-input-group class="mb-3 login-font">
                   <span cInputGroupText>
                     <svg cIcon name="cilUser"></svg>
                   </span>
-                  <input autoComplete="username" cFormControl placeholder="Username" />
+                  <input 
+                    autoComplete="Email" 
+                    cFormControl 
+                    placeholder="Email" 
+                    formControlName="email"/>
                 </c-input-group>
-                <c-input-group class="mb-4">
+
+                <c-input-group class="mb-4 login-font">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
@@ -23,34 +30,32 @@
                     cFormControl
                     placeholder="Password"
                     type="password"
+                    formControlName="password"
                   />
                 </c-input-group>
+
                 <c-row>
                   <c-col xs="6">
-                    <button cButton class="px-4" color="primary">
+                    <button cButton class="px-4 login-font-bold" color="secondary" type="submit" [disabled]="!signinForm.valid">
                       Login
                     </button>
                   </c-col>
                   <c-col class="text-right" xs="6">
-                    <button cButton class="px-0" color="link">
+                    <button cButton class="px-0 login-font" color="link">
                       Forgot password?
                     </button>
                   </c-col>
                 </c-row>
               </form>
+
             </c-card-body>
           </c-card>
-          <c-card [ngStyle]="{'width.%': 44}" class="text-white bg-primary py-5">
+          <!-- <c-card [ngStyle]="{'width.%': 44}" class="text-white bg-secondary py-5"> -->
+          <c-card class="text-white bg-secondary py-5 p-4">
             <c-card-body class="text-center">
+              <img class="login-logo" src="../../../../assets/img/brand/brand-logo-2.png">
               <div>
-                <h2>Sign up</h2>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                  tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <button [active]="true" cButton class="mt-3" color="primary" routerLink="/register">
-                  Register Now!
-                </button>
+                <h3 class="login-font">Franchise Admin</h3>
               </div>
             </c-card-body>
           </c-card>
@@ -58,4 +63,11 @@
       </c-col>
     </c-row>
   </c-container>
+
+  <c-alert [visible]="visible" color="danger" fade variant="solid" *ngIf="visible" class="alert-style">
+
+      <strong> Invalid credentials, please try again </strong>
+
+  </c-alert>
+
 </div>

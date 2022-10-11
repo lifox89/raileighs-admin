@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "servidor-prod": {
+      "hosting": {
+        "coreui-free-angular-admin-template": [
+          "raileighs-admin"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "servidor-prod"
+  }
+}

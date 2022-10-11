@@ -1,5 +1,6 @@
 import { AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { getStyle } from '@coreui/utils/src';
+import { ReportsService } from "src/app/shared/services/reports.service";
 
 @Component({
   selector: 'app-widgets-e',
@@ -9,17 +10,21 @@ import { getStyle } from '@coreui/utils/src';
 })
 export class WidgetsEComponent implements AfterContentInit {
 
-  constructor(
-    private changeDetectorRef: ChangeDetectorRef
-  ) {
-    this.prepareLabels();
-    this.prepareDatasets();
-    this.prepareData();
+  constructor( private changeDetectorRef: ChangeDetectorRef,
+               private reportServ: ReportsService) {
+    // this.prepareLabels();
+    // this.prepareDatasets();
+    // this.prepareData();
+
+    this.reportServ.fetchSales_today();
+    // this.reportServ.getSales_today();
   }
 
   datasets: any[] = [];
   labels: string[] = [];
   data: any[] = [];
+
+
   barOptions = {
     maintainAspectRatio: false,
     plugins: {
