@@ -36,6 +36,63 @@ export class ReportsService {
     return this.franchiseStores.asObservable();
   }
 
+  public getOrdersStore(storeId:string){
+
+    let orders = new BehaviorSubject<any[]>(undefined);
+    let array = [];
+
+    if (this.franchiseOrders.value) {
+
+      this.franchiseOrders.value.find( found => {
+
+        if (found.store_id == storeId) {
+          array = found.orders;
+          orders.next(array);
+          console.log(array);
+        }
+      });
+
+    }
+    return orders.asObservable();
+  }
+
+
+  public getOrdersItems(storeId:string){
+
+    let items = new BehaviorSubject<any[]>(undefined);
+    let array = [];
+
+    if (this.franchiseOrders.value) {
+      this.franchiseOrders.value.find( found => {
+
+        if (found.store_id == storeId) {
+          found.orders.forEach( order => {
+            order.order_items.forEach( item => {
+
+              let result = array.find( dat => {
+                return (dat.item_added === item.item_added)
+              });
+
+              if (!result) {
+                array.push({
+                  item_added: item.item_added,
+                  item_name:  item.item_name,
+                  item_qty:   item.item_qty,
+                });
+              }else{
+                result.item_qty += item.item_qty;
+              }
+
+            });
+          });
+
+          items.next(array);
+        }
+      });
+    }
+    return items.asObservable();
+  }
+
 
   public fetchSales_today(){
     let orders : Array<any> = [];
@@ -86,8 +143,6 @@ export class ReportsService {
                         }
                       });
         });
-
-        console.log(stores);
         this.franchiseStores.next(stores);
         this.franchiseOrders.next(orders);
     }

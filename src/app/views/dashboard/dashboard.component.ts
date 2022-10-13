@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { ReportsService } from "src/app/shared/services/reports.service";
+import { Observable } from 'rxjs';
 
 // interface IUser {
 //   name: string;
@@ -23,8 +24,91 @@ import { ReportsService } from "src/app/shared/services/reports.service";
 })
 export class DashboardComponent implements OnInit {
 
+
+  franchiseStores : Observable<any[]>;
+  franchiseOrders : Observable<any[]>;
+  data: any[] = [];
+  options: any[] = [];
+
+  labels = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+    'January',
+    'February',
+    'March',
+    'April'
+  ];
+
+  color = [
+    'primary', 
+    'secondary',
+    'info',
+    'fourth',
+    'fifth',
+    'tertiary',
+    'warning',
+    'danger',
+    'light',
+    'dark'];
+
   constructor(private chartsData: DashboardChartsData,
               private reportServ: ReportsService) {
+  }
+
+  ngOnInit(): void {
+    this.setData();
+    this.reportServ.fetchSales_today();
+    this.getStores();
+    this.getOrders();
+  }
+
+  setData() {
+    for (let idx = 0; idx < 4; idx++) {
+      this.data[idx] = {
+        labels: idx < 3 ? this.labels.slice(0, 7) : this.labels,
+      };
+    }
+    
+  }
+
+  getStores(){
+    this.franchiseStores = this.reportServ.getStores();
+  }
+
+  getOrders(){
+    this.franchiseOrders = this.reportServ.getSales_today();
+  }
+
+   getSales(storeId:string) : number{
+
+    let sales: number;
+
+    this.franchiseOrders.subscribe(data => {
+
+      data.find( found => {
+        if (found.store_id == storeId) {
+          sales = found.sales_today;
+        }
+      });
+
+    });
+
+    return sales;
+  }
+
+
+  getColor(idx:number){
+    return this.color[idx%10];
   }
 
   // public users: IUser[] = [
@@ -113,10 +197,7 @@ export class DashboardComponent implements OnInit {
   //   trafficRadio: new UntypedFormControl('Month')
   // });
 
-  ngOnInit(): void {
-    // this.initCharts();
-    this.reportServ.fetchSales_today();
-  }
+  
 
   // initCharts(): void {
   //   this.mainChart = this.chartsData.mainChart;

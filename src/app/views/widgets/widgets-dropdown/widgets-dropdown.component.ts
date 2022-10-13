@@ -43,7 +43,7 @@ export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
   }
 
   ngOnInit(): void {
-    // this.setData();
+    this.setData();
     this.getStores();
     this.getOrders();
   }
