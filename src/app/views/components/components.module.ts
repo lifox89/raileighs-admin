@@ -7,24 +7,40 @@ import {
   GridModule,
   ProgressModule,
   SharedModule,
-  WidgetModule
+  WidgetModule,
+  NavModule, 
+  TabsModule,
+  UtilitiesModule,
+  TableModule,
+  FormModule,  
 } from '@coreui/angular';
-
 
 import { IconModule } from '@coreui/icons-angular';
 import { ChartjsModule } from '@coreui/angular-chartjs';
 import { WidgetsModule } from '../widgets/widgets.module';
 
 import { ComponentsRoutingModule } from './components-routing.module';
-import { TableModule, UtilitiesModule } from '@coreui/angular';
+import { NgbDatepickerModule} from '@ng-bootstrap/ng-bootstrap';
 
 import { ItemsSummaryComponent } from "./items-summary/items-summary.component";
 import { OrdersSummaryComponent } from "./orders-summary/orders-summary.component";
+import { ReportsComponent } from './reports/reports.component';
+
+
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatInputModule } from "@angular/material/input";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { MatSortModule } from "@angular/material/sort";
+import { MatTableModule } from "@angular/material/table";
+import { MatTabsModule } from "@angular/material/tabs";
+
 
 @NgModule({
   declarations: [ 
     ItemsSummaryComponent,
-    OrdersSummaryComponent
+    OrdersSummaryComponent,
+    ReportsComponent
    ],
   imports: [
     CommonModule,
@@ -40,7 +56,18 @@ import { OrdersSummaryComponent } from "./orders-summary/orders-summary.componen
     WidgetModule,
     IconModule,
     ChartjsModule,
-    WidgetsModule
+    WidgetsModule,
+    NavModule, 
+    TabsModule,
+    NgbDatepickerModule,
+    FormModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatSortModule,
+    MatTableModule,
+    MatTabsModule
   ],
   exports: [
     ItemsSummaryComponent,

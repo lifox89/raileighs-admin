@@ -9,8 +9,6 @@ import {
 } from '@angular/core';
 import { getStyle } from '@coreui/utils/src';
 import { ChartjsComponent } from '@coreui/angular-chartjs';
-import { ReportsService } from "src/app/shared/services/reports.service";
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-widgets-dropdown',
@@ -20,62 +18,15 @@ import { Observable } from 'rxjs';
 })
 export class WidgetsDropdownComponent implements OnInit, AfterContentInit {
 
-  franchiseStores : Observable<any[]>;
-  franchiseOrders : Observable<any[]>;
-
-  color = [
-    'primary', 
-    'secondary',
-    'info',
-    'fourth',
-    'fifth',
-    'tertiary',
-    'warning',
-    'danger',
-    'light',
-    'dark'];
-
-  constructor( private changeDetectorRef: ChangeDetectorRef,
-               private reportServices: ReportsService) {
-    this.reportServices.fetchSales_today();
+  constructor( private changeDetectorRef: ChangeDetectorRef) {
 
     
   }
 
   ngOnInit(): void {
     this.setData();
-    this.getStores();
-    this.getOrders();
   }
 
-  getStores(){
-    this.franchiseStores = this.reportServices.getStores();
-  }
-
-  getOrders(){
-    this.franchiseOrders = this.reportServices.getSales_today();
-  }
-
-   getSales(storeId:string) : number{
-
-    let sales: number;
-
-    this.franchiseOrders.subscribe(data => {
-
-      data.find( found => {
-        if (found.store_id == storeId) {
-          sales = found.sales_today;
-        }
-      });
-
-    });
-
-    return sales;
-  }
-
-  getColor(idx:number){
-    return this.color[idx%10];
-  }
 
   data: any[] = [];
   options: any[] = [];

@@ -50,11 +50,13 @@ import {
   UtilitiesModule,
 } from '@coreui/angular';
 
+
 import { IconModule, IconSetService } from '@coreui/icons-angular';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideFunctions,getFunctions } from '@angular/fire/functions';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -107,6 +109,7 @@ const APP_CONTAINERS = [
     AngularFirestoreModule,
     AngularFireStorageModule,
     AngularFireDatabaseModule,
+    NgbModule,
   ],
   providers: [
     {

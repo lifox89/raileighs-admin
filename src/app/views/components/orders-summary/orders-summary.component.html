@@ -12,7 +12,7 @@
     <tbody>
         <tr *ngFor="let order of ( orders | async ), let idx=index">
             <th>{{idx + 1}}</th>
-            <td>{{order.order_time | date:'hh:mm'}}</td>
+            <td>{{order.order_time | date:'HH:mm'}}</td>
             <td>{{order.payment_type}}</td>
             <td>{{order.payment_reference}}</td>
             <td class="order-total">{{order.order_total | currency: '' + ' '}}</td>

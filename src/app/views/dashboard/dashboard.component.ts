@@ -67,7 +67,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.setData();
-    this.reportServ.fetchSales_today();
+    this.reportServ.fetchStores();
+    this.reportServ.fetchSales_today(null);
     this.getStores();
     this.getOrders();
   }

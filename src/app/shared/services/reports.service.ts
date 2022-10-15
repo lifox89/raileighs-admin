@@ -11,25 +11,22 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 })
 export class ReportsService {
 
-  private startToday : any;
-  private endToday: any;
   private user: user;
-  private franchiseOrders = new BehaviorSubject<any[]>(undefined);
-  private franchiseStores = new BehaviorSubject<any>(undefined);
+  private franchiseOrders       = new BehaviorSubject<any[]>(undefined);
+  private franchiseStores       = new BehaviorSubject<any>(undefined);
+  private franchiseOrdersRange  = new BehaviorSubject<any[]>(undefined);
   
-
   constructor( private firestore : AngularFirestore) { 
 
-    const start : any = moment().startOf('day');
-    const end   : any = moment().endOf('day');
-
-    this.startToday = new Date(start).getTime();
-    this.endToday   = new Date(end).getTime();
   }
 
-
+  // GET METHODS
   public getSales_today(){
     return this.franchiseOrders.asObservable();
+  }
+
+  public getSales_range(){
+    return this.franchiseOrdersRange.asObservable();
   }
 
   public getStores(){
@@ -48,7 +45,6 @@ export class ReportsService {
         if (found.store_id == storeId) {
           array = found.orders;
           orders.next(array);
-          console.log(array);
         }
       });
 
@@ -94,14 +90,17 @@ export class ReportsService {
   }
 
 
-  public fetchSales_today(){
-    let orders : Array<any> = [];
+
+  // FETCH METHODS
+  public fetchStores(){
     let stores: Array<any> = [];
+
     this.user = JSON.parse(localStorage.getItem('user'));
 
-    if (this.user) {
-      this.user.stores.forEach(store=>{
-        
+    if (this.user && !this.franchiseStores.value) {
+      
+      this.user.stores.forEach(store=> {
+
         this.firestore.collection('servidor-accounts').doc(store)
                       .get()
                       .subscribe( dat => {
@@ -111,18 +110,37 @@ export class ReportsService {
                           store_id      : value.store_id,
                           store_name    : value.store_name,
                           store_currency: value.store_currency,
-                          sales_date: this.startToday,
                         };
                         
                         if (!stores.find( found => {return (found.store_id == store)})) {
                           stores.push(store);
                         }
                       });
+      });
+
+      this.franchiseStores.next(stores);
+    }
+  }
+
+
+  public fetchSales_today( date: any){
+    let orders : Array<any> = [];
+    let start = this.startofDay(date);
+    let end   = this.endofDay(date);
+
+    if (date) {
+      this.franchiseOrdersRange.next(null);
+    }
+
+    this.user = JSON.parse(localStorage.getItem('user'));
+
+    if (this.user) {
+      this.user.stores.forEach(store=>{
 
         this.firestore.collection('servidor-accounts').doc(store)
                       .collection('ordersArchive',ref => ref.orderBy('order_time')
-                      .where("order_time",">=", this.startToday)
-                      .where("order_time","<=", this.endToday))
+                      .where("order_time",">=", start)
+                      .where("order_time","<=", end))
                       .get().subscribe( data => {
 
                         let temp = {
@@ -143,9 +161,42 @@ export class ReportsService {
                         }
                       });
         });
-        this.franchiseStores.next(stores);
-        this.franchiseOrders.next(orders);
+
+        if (date) {
+          this.franchiseOrdersRange.next(orders);
+        }else{
+          this.franchiseOrders.next(orders);
+        }
+        
     }
+  }
+
+
+  // UTILITIES
+  startofDay(date:any){
+
+    let start: any;
+
+    if (date) {
+      start = moment(date).startOf('day');
+    }else{
+      start = moment().startOf('day');
+    }
+  
+    return (new Date(start).getTime());
+  }
+
+  endofDay(date:any){
+
+    let end:any;
+
+    if (date) {
+      end = moment(date).endOf('day');
+    }else{
+      end = moment().endOf('day');
+    }
+
+    return (new Date(end).getTime());
   }
 }
 

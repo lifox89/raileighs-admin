@@ -7,8 +7,13 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-speedometer' },
   },
   {
+    name: 'Reports',
+    url: '/components/reports',
+    iconComponent: { name: 'cil-notes' },
+  },
+  {
     name: 'Inventories',
-    url: '/dashboard',
+    url: '/components/inventories',
     iconComponent: { name: 'cil-puzzle' },
   },
   // {
