@@ -5,6 +5,7 @@ import {MatTableDataSource} from '@angular/material/table';
 import * as moment from 'moment';
 import { ReportsService } from 'src/app/shared/services/reports.service';
 import { Observable } from 'rxjs';
+import { MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-reports',
@@ -30,6 +31,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference','order_total'];
 
   constructor(  private reportServ:  ReportsService,
+                private snackBar:    MatSnackBar,
                 public  config:      NgbInputDatepickerConfig, 
                 public  calendar:    NgbCalendar ) {
     
@@ -49,6 +51,10 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     // this.dataSource.paginator = this.paginator;
   }
 
+  openSnackBar(message: string) {
+    this.snackBar.open(message,null,{duration: 5000});
+  }
+
   setTotal(event:any){
     if (this.ordersRange) {
        this.ordersRange.subscribe( stores => {
@@ -63,6 +69,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
 
   toggleSwitch(){
     this.switchbol = !this.switchbol;
+    this.targetDate = this.fromDate ='';
 
     if (this.switchbol) {
       this.rangeText = 'Date range';
@@ -77,7 +84,7 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     if (!this.switchbol) {
       this.singleDate(this.targetDate);
     }else{
-
+      this.dateRange(this.fromDate, this.targetDate);
     }
   }
 
@@ -96,9 +103,26 @@ export class ReportsComponent implements OnInit, AfterViewInit {
     this.ordersRange = this.reportServ.getSales_range();
   }
 
-  onDateSelect(date){
+  dateRange( fromDate: any, targetDate: any){
+
+    if ( (fromDate && targetDate) && (fromDate < targetDate)) {
+      this.reportServ.fetchSales_range(fromDate,targetDate);
+      this.ordersRange = this.reportServ.getSales_range();
+    }else{
+      this.openSnackBar('Invalid date range, please fill up correctly!');
+    }
+
+    
+  }
+
+  onDateSelectTarget(date:any){
     let str = String(date.year) + String(date.month) + String(date.day);
     this.targetDate = new Date(moment(str,'YYYYMMDD').toDate()).getTime();
+  }
+
+  onDateSelectFrom(date:any){
+    let str = String(date.year) + String(date.month) + String(date.day);
+    this.fromDate = new Date(moment(str,'YYYYMMDD').toDate()).getTime();
   }
 
   getData(storeId:any){

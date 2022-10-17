@@ -34,6 +34,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { MatTabsModule } from "@angular/material/tabs";
     MatProgressSpinnerModule,
     MatSortModule,
     MatTableModule,
-    MatTabsModule
+    MatTabsModule,
+    MatSnackBarModule
   ],
   exports: [
     ItemsSummaryComponent,

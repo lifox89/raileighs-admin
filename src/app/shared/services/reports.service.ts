@@ -172,6 +172,50 @@ export class ReportsService {
   }
 
 
+  public fetchSales_range( fromDate: any, targetDate: any){
+    let orders : Array<any> = [];
+    
+    let start = this.startofDay(fromDate);
+    let end   = this.endofDay(targetDate);
+
+    this.franchiseOrdersRange.next(null);
+
+    this.user = JSON.parse(localStorage.getItem('user'));
+
+    if (this.user) {
+      this.user.stores.forEach(store=>{
+
+        this.firestore.collection('servidor-accounts').doc(store)
+                      .collection('ordersArchive',ref => ref.orderBy('order_time')
+                      .where("order_time",">=", start)
+                      .where("order_time","<=", end))
+                      .get().subscribe( data => {
+
+                        let temp = {
+                          store_id : store,
+                          sales_today: 0,
+                          orders: [],
+                        };
+
+                        data.forEach(dat => {
+                          let order:any = dat.data();
+                          temp.sales_today += order.order_total;
+                          temp.orders.push(dat.data());
+                        });
+
+                        if (!orders.find( found => {
+                          return (found.store_id == temp.store_id)})) {
+                            orders.push(temp);
+                        }
+                      });
+        });
+
+        this.franchiseOrdersRange.next(orders);
+        
+    }
+  }
+
+
   // UTILITIES
   startofDay(date:any){
 
