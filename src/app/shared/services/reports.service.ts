@@ -4,8 +4,9 @@ import { user } from "src/app/shared/model/user";
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
-import { untilDestroyed } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+UntilDestroy()
 @Injectable({
   providedIn: 'root'
 })
@@ -129,7 +130,7 @@ export class ReportsService {
     let end   = this.endofDay(date);
 
     if (date) {
-      this.franchiseOrdersRange.next(null);
+      this.franchiseOrdersRange.next([]);
     }
 
     this.user = JSON.parse(localStorage.getItem('user'));
@@ -178,7 +179,7 @@ export class ReportsService {
     let start = this.startofDay(fromDate);
     let end   = this.endofDay(targetDate);
 
-    this.franchiseOrdersRange.next(null);
+    this.franchiseOrdersRange.next([]);
 
     this.user = JSON.parse(localStorage.getItem('user'));
 
