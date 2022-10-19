@@ -1,82 +1,56 @@
-<c-nav variant="tabs">
-    <a [active]="true" [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="0" cNavLink>Generate Reports</a>
-    <a [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="1" cNavLink>Charts</a>
-    <a [cTabContent]="tabContent" [routerLink] [tabPaneIdx]="2" cNavLink>Forecasts</a>
-</c-nav>
+<div>
+    <form class="row">
 
-<c-tab-content #tabContent="cTabContent">
-
-
-<c-tab-pane class="p-3">
-        <div>
-            <form class="row">
-
-                <div class="col-4">
-                    <c-form-check sizing="xl" switch color="secondary" ngModel="switchbol">
-                        <input cFormCheckInput type="checkbox" (click)="toggleSwitch()" />
-                        <label cFormCheckLabel>{{ rangeText }}</label>
-                    </c-form-check>
-                </div>
-                <div class="col-4" *ngIf="!switchbol"></div>
-                <div class="col-4 row-cols-sm-auto picker" *ngIf="!switchbol">
-                    <div class="input-group">
-                        <button cButton color="secondary" (click)="generateReport()">Generate</button>
-                        <input  class="form-control" placeholder="Target date" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelectTarget($event)" [readonly]="true">
-                        <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button" color="secondary"></button>
-                    </div>
-                </div>
-
-                <div class="col-8 row-cols-sm-auto picker" *ngIf="switchbol">
-                    <div class="input-group">
-                        <button cButton color="secondary" (click)="generateReport()">Generate</button>
-                        <input  class="form-control" placeholder="From date" name="fromdate" (dateSelect)="onDateSelectFrom($event)" ngModel="fromDate" ngbDatepicker #a="ngbDatepicker"[readonly]="true" >
-                        <button class="btn btn-outline-secondary calendar" (click)="a.toggle()" type="button"></button>
-
-                        <span class="separator">to</span>
-
-                        <input  class="form-control" placeholder="Target date" name="targetdate" (dateSelect)="onDateSelectTarget($event)" ngModel="targetDate" ngbDatepicker #b="ngbDatepicker" [readonly]="true">
-                        <button class="btn btn-outline-secondary calendar" (click)="b.toggle()" type="button"></button>
-                    </div>
-                </div>
-            </form>
-
-            <form class="row second-form">
-                <div class="col-12">
-                    <c-card>
-                        <c-card-header>
-                            <div class="row">
-                                <div class="col-6">Sales Summary 
-                                    <span>{{fromDate | date:'MMM dd, yyyy'}}</span>
-                                    <span *ngIf="switchbol && ( fromDate && targetDate )"> to </span>
-                                    <span>{{targetDate | date:'MMM dd, yyyy'}}</span>
-                                </div>
-                                <div class="col-6 summary-total" *ngIf="_total">Total Sales: {{ _total | currency:'Php '}}</div>
-                            </div>
-                        </c-card-header>
-                        <c-card-body>
-                            <mat-tab-group (selectedTabChange)="setTotal($event)" dynamicHeight>
-                                <mat-tab *ngFor="let store of (franchiseStores | async)" label="{{store.store_name}}">
-                                    <app-table-paginate [storeId]="store.store_id" ></app-table-paginate>
-                                </mat-tab>
-                            </mat-tab-group>
-                        </c-card-body>
-                    </c-card>
-                </div>
-            </form>
+        <div class="col-4">
+            <c-form-check sizing="xl" switch color="secondary" ngModel="switchbol">
+                <input cFormCheckInput type="checkbox" (click)="toggleSwitch()" />
+                <label cFormCheckLabel>{{ rangeText }}</label>
+            </c-form-check>
         </div>
-        
-    </c-tab-pane>
+        <div class="col-4" *ngIf="!switchbol"></div>
+        <div class="col-4 row-cols-sm-auto picker" *ngIf="!switchbol">
+            <div class="input-group">
+                <button cButton color="secondary" (click)="generateReport()">Generate</button>
+                <input  class="form-control" placeholder="Target date" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelectTarget($event)" [readonly]="true">
+                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button" color="secondary"></button>
+            </div>
+        </div>
 
+        <div class="col-8 row-cols-sm-auto picker" *ngIf="switchbol">
+            <div class="input-group">
+                <button cButton color="secondary" (click)="generateReport()">Generate</button>
+                <input  class="form-control" placeholder="From date" name="fromdate" (dateSelect)="onDateSelectFrom($event)" ngModel="fromDate" ngbDatepicker #a="ngbDatepicker"[readonly]="true" >
+                <button class="btn btn-outline-secondary calendar" (click)="a.toggle()" type="button"></button>
 
+                <span class="separator">to</span>
 
-    <c-tab-pane class="p-3">
-        This is some placeholder content the <strong>Profile</strong> tab's associated content. Clicking another
-        tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
-        content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.
-    </c-tab-pane>
-    <c-tab-pane class="p-3">
-        This is some placeholder content the <strong>Contact</strong> tab's associated content. Clicking another
-        tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the
-        content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.
-    </c-tab-pane>
-</c-tab-content>
+                <input  class="form-control" placeholder="Target date" name="targetdate" (dateSelect)="onDateSelectTarget($event)" ngModel="targetDate" ngbDatepicker #b="ngbDatepicker" [readonly]="true">
+                <button class="btn btn-outline-secondary calendar" (click)="b.toggle()" type="button"></button>
+            </div>
+        </div>
+    </form>
+
+    <form class="row second-form">
+        <div class="col-12">
+            <c-card>
+                <c-card-header>
+                    <div class="row">
+                        <div class="col-6">Sales Summary 
+                            <span>{{fromDate | date:'MMM dd, yyyy'}}</span>
+                            <span *ngIf="switchbol && ( fromDate && targetDate )"> to </span>
+                            <span>{{targetDate | date:'MMM dd, yyyy'}}</span>
+                        </div>
+                        <div class="col-6 summary-total" *ngIf="_total">Total Sales: {{ _total | currency:'Php '}}</div>
+                    </div>
+                </c-card-header>
+                <c-card-body>
+                    <mat-tab-group (selectedTabChange)="setTotal($event)" dynamicHeight>
+                        <mat-tab *ngFor="let store of (franchiseStores | async)" label="{{store.store_name}}">
+                            <app-table-paginate [storeId]="store.store_id" [storeName]="store.store_name"></app-table-paginate>
+                        </mat-tab>
+                    </mat-tab-group>
+                </c-card-body>
+            </c-card>
+        </div>
+    </form>
+</div>

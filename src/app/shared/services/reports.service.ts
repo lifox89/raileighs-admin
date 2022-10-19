@@ -21,6 +21,12 @@ export class ReportsService {
 
   }
 
+
+  //
+  public initRange(){
+    this.franchiseOrdersRange.next([]);
+  }
+
   // GET METHODS
   public getSales_today(){
     return this.franchiseOrders.asObservable();

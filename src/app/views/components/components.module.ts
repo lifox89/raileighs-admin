@@ -35,7 +35,13 @@ import { MatSortModule } from "@angular/material/sort";
 import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatTableExporterModule } from 'mat-table-exporter';
+
+
+
 import { TablePaginateComponent } from './table-paginate/table-paginate.component';
+import { ChartsComponent } from './charts/charts.component';
+import { ForecastsComponent } from './forecasts/forecasts.component';
 
 
 @NgModule({
@@ -43,7 +49,9 @@ import { TablePaginateComponent } from './table-paginate/table-paginate.componen
     ItemsSummaryComponent,
     OrdersSummaryComponent,
     ReportsComponent,
-    TablePaginateComponent
+    TablePaginateComponent,
+    ChartsComponent,
+    ForecastsComponent
    ],
   imports: [
     CommonModule,
@@ -72,6 +80,7 @@ import { TablePaginateComponent } from './table-paginate/table-paginate.componen
     MatTableModule,
     MatTabsModule,
     MatSnackBarModule,
+    MatTableExporterModule,
   ],
   exports: [
     ItemsSummaryComponent,

@@ -8,8 +8,24 @@ export const navItems: INavData[] = [
   },
   {
     name: 'Reports',
-    url: '/components/reports',
     iconComponent: { name: 'cil-notes' },
+    children:[
+      {
+        name: 'Sales',
+        url: '/components/reports',
+        iconComponent: { name: 'cil-dollar' },
+      },
+      {
+        name: 'Charts',
+        url: '/components/charts',
+        iconComponent: { name: 'cil-chart' },
+      },
+      {
+        name: 'Forecast',
+        url: '/components/forecasts',
+        iconComponent: { name: 'cil-chart' },
+      },
+    ],
   },
   {
     name: 'Inventories',

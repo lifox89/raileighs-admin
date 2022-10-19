@@ -20,12 +20,16 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
   @ViewChild('sortOrders') sortOrders = new MatSort();
   @ViewChild('sortItems') sortItems = new MatSort();
   @Input() storeId = '';
+  @Input() storeName = '';
 
   public dataSource = new MatTableDataSource<any>([]);
   public itemSource = new MatTableDataSource<any>([]);
   public ordersRange : Observable<any[]>;
   public orderColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference','order_total'];
-  public itemColumns: string[] = ['position', 'item_name', 'item_qty'];
+  public itemColumns:  string[] = ['position', 'item_name', 'item_qty'];
+
+
+  _show:boolean = false;
 
   constructor( private reportServ: ReportsService,
                private _liveAnnouncer: LiveAnnouncer) { 
@@ -33,14 +37,19 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+
+    this.ordersRange = new Observable<any[]>;
+    this.dataSource.data = [];
+    this.itemSource.data = [];
+
     this.dataSource.paginator = this.orderpaginator;
     this.dataSource.sort = this.sortOrders;
 
     this.itemSource.paginator = this.itemPaginator;
     this.itemSource.sort = this.sortItems;
-    
-  }  
-
+  } 
+  
+  
   ngOnInit(): void {
     this.ordersRange = this.reportServ.getSales_range();
     this.loadTable();
@@ -65,6 +74,7 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
         });
 
         if (res) {
+          this._show = true;
           this.dataSource.data = res.orders;
         }
       }

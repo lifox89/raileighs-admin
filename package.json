@@ -40,6 +40,7 @@
     "bootstrap": "^5.2.0",
     "chart.js": "^3.9.1",
     "firebase": "^9.10.0",
+    "mat-table-exporter": "^10.2.4",
     "moment": "^2.29.4",
     "ngx-perfect-scrollbar": "^10.1.1",
     "rxjs": "~7.5.0",

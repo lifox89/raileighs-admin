@@ -52,7 +52,8 @@ export class ReportsComponent implements OnInit {
 
   setTotal(event:any){
     this.ordersRange.pipe(untilDestroyed(this),debounceTime(500))
-                    .subscribe( stores => {           
+                    .subscribe( stores => {   
+      console.log(event);
       if (stores && stores[event.index]) {
         this._total = stores[event.index].sales_today;
       }
@@ -60,6 +61,7 @@ export class ReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.reportServ.initRange();
     this.franchiseStores = this.reportServ.getStores();
   }
 
@@ -82,6 +84,8 @@ export class ReportsComponent implements OnInit {
     }else{
       this.dateRange(this.fromDate, this.targetDate);
     }
+
+    this.setTotal({index:0}); // Trigger Total
   }
 
   checkIndex(idx:any){
