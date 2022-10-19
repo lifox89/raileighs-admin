@@ -90,6 +90,42 @@ export class ReportsService {
     return items.asObservable();
   }
 
+  public getOrdersItemsRange(storeId:string){
+
+    let items = new BehaviorSubject<any[]>(undefined);
+    let array = [];
+
+    if (this.franchiseOrdersRange.value) {
+      this.franchiseOrdersRange.value.find( found => {
+
+        if (found.store_id == storeId) {
+          found.orders.forEach( order => {
+            order.order_items.forEach( item => {
+
+              let result = array.find( dat => {
+                return (dat.item_added === item.item_added)
+              });
+
+              if (!result) {
+                array.push({
+                  item_added: item.item_added,
+                  item_name:  item.item_name,
+                  item_qty:   item.item_qty,
+                });
+              }else{
+                result.item_qty += item.item_qty;
+              }
+
+            });
+          });
+
+          items.next(array);
+        }
+      });
+    }
+    return items.asObservable();
+  }
+
 
 
   // FETCH METHODS

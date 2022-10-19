@@ -4,6 +4,8 @@ import { MatTableDataSource} from '@angular/material/table';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, Observable } from 'rxjs';
 import { ReportsService } from 'src/app/shared/services/reports.service';
+import { MatSort, Sort} from '@angular/material/sort';
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 @UntilDestroy()
 @Component({
@@ -13,17 +15,31 @@ import { ReportsService } from 'src/app/shared/services/reports.service';
 })
 export class TablePaginateComponent implements OnInit, AfterViewInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('paginatorOrder') orderpaginator: MatPaginator;
+  @ViewChild('paginatorItems') itemPaginator: MatPaginator;
+  @ViewChild('sortOrders') sortOrders = new MatSort();
+  @ViewChild('sortItems') sortItems = new MatSort();
   @Input() storeId = '';
 
   public dataSource = new MatTableDataSource<any>([]);
+  public itemSource = new MatTableDataSource<any>([]);
   public ordersRange : Observable<any[]>;
-  public displayedColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference','order_total'];
+  public orderColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference','order_total'];
+  public itemColumns: string[] = ['position', 'item_name', 'item_qty'];
 
   constructor( private reportServ: ReportsService,
-               private ngZone: NgZone) { 
+               private _liveAnnouncer: LiveAnnouncer) { 
     
   }
+
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.orderpaginator;
+    this.dataSource.sort = this.sortOrders;
+
+    this.itemSource.paginator = this.itemPaginator;
+    this.itemSource.sort = this.sortItems;
+    
+  }  
 
   ngOnInit(): void {
     this.ordersRange = this.reportServ.getSales_range();
@@ -36,6 +52,14 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
       
       if (stores) {
 
+        this.reportServ.getOrdersItemsRange(this.storeId)
+                       .pipe(untilDestroyed(this))
+                       .subscribe( items => {
+          if (items) {
+            this.itemSource.data = items;
+          }
+        });
+
         let res = stores.find( found => {
           return (found.store_id === this.storeId);
         });
@@ -47,8 +71,14 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }  
+  announceSortChange(sortState: Sort) {
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
+  }
+
+ 
 
 }

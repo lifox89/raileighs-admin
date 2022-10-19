@@ -36,7 +36,8 @@ export class ReportsComponent implements OnInit {
                 public  calendar:    NgbCalendar ) {
     
     this.reportServ.fetchStores();
-    
+    this.ordersRange = this.reportServ.getSales_range();
+
     config.minDate = {year: 2020, month: 1, day: 1};
     config.maxDate = {year: 2099, month: 12, day: 31};
     config.outsideDays = 'hidden';
@@ -50,18 +51,12 @@ export class ReportsComponent implements OnInit {
   }
 
   setTotal(event:any){
-    if (this.ordersRange) {
-      this.ordersRange.pipe(untilDestroyed(this))
-                      .subscribe( stores => {
-        if (stores && stores[event.index]) {
-          this._total = stores[event.index].sales_today;
-        }
-      });
-    }
-  }
-
-  totalSales(event:any){
-    console.log(event);
+    this.ordersRange.pipe(untilDestroyed(this),debounceTime(500))
+                    .subscribe( stores => {           
+      if (stores && stores[event.index]) {
+        this._total = stores[event.index].sales_today;
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -87,8 +82,6 @@ export class ReportsComponent implements OnInit {
     }else{
       this.dateRange(this.fromDate, this.targetDate);
     }
-
-    this.ordersRange = this.reportServ.getSales_range();
   }
 
   checkIndex(idx:any){
