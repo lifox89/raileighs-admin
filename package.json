@@ -38,7 +38,6 @@
     "@ngneat/until-destroy": "^9.2.2",
     "@popperjs/core": "^2.10.2",
     "bootstrap": "^5.2.0",
-    "chart.js": "^3.9.1",
     "firebase": "^9.10.0",
     "mat-table-exporter": "^10.2.4",
     "moment": "^2.29.4",

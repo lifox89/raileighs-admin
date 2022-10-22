@@ -42,6 +42,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 import { TablePaginateComponent } from './table-paginate/table-paginate.component';
 import { ChartsComponent } from './charts/charts.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
+import { ExpensesComponent } from './expenses/expenses.component';
 
 
 @NgModule({
@@ -51,7 +52,8 @@ import { ForecastsComponent } from './forecasts/forecasts.component';
     ReportsComponent,
     TablePaginateComponent,
     ChartsComponent,
-    ForecastsComponent
+    ForecastsComponent,
+    ExpensesComponent
    ],
   imports: [
     CommonModule,

@@ -1,8 +1,7 @@
 
-
 <span class="dashboard-title">Today's Sales</span>
 
-<c-row>
+<c-row *ngIf="(franchiseStores|async)">
     <c-col sm="6" xl="3" *ngFor="let store of (franchiseStores | async ), let idx = index">
         <c-widget-stat-a class="mb-4" color="{{ getColor(idx) }}" title="{{store.store_name}}">
 

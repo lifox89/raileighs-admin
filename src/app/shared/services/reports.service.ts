@@ -17,6 +17,8 @@ export class ReportsService {
   private franchiseStores       = new BehaviorSubject<any>(undefined);
   private franchiseOrdersRange  = new BehaviorSubject<any[]>(undefined);
   
+  private _spinnerState = new BehaviorSubject<boolean>(undefined);
+
   constructor( private firestore : AngularFirestore) { 
 
   }
@@ -206,8 +208,10 @@ export class ReportsService {
         });
 
         if (date) {
+          this.setSpinnerState(false);
           this.franchiseOrdersRange.next(orders);
         }else{
+          this.setSpinnerState(false);
           this.franchiseOrders.next(orders);
         }
         
@@ -260,6 +264,15 @@ export class ReportsService {
 
 
   // UTILITIES
+
+  setSpinnerState(state:boolean){
+    this._spinnerState.next(state);
+  }
+
+  getSpinnerState(){
+    return this._spinnerState.asObservable();
+  }
+
   startofDay(date:any){
 
     let start: any;

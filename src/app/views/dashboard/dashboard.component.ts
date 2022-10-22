@@ -2,22 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
 import { ReportsService } from "src/app/shared/services/reports.service";
-import { Observable } from 'rxjs';
+import { debounceTime, Observable } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
-// interface IUser {
-//   name: string;
-//   state: string;
-//   registered: string;
-//   country: string;
-//   usage: number;
-//   period: string;
-//   payment: string;
-//   activity: string;
-//   avatar: string;
-//   status: string;
-//   color: string;
-// }
-
+@UntilDestroy()
 @Component({
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss']
@@ -69,6 +57,7 @@ export class DashboardComponent implements OnInit {
     this.setData();
     this.reportServ.fetchStores();
     this.reportServ.fetchSales_today(null);
+
     this.getStores();
     this.getOrders();
   }
@@ -81,7 +70,7 @@ export class DashboardComponent implements OnInit {
     }
     
   }
-
+  
   getStores(){
     this.franchiseStores = this.reportServ.getStores();
   }
@@ -90,19 +79,22 @@ export class DashboardComponent implements OnInit {
     this.franchiseOrders = this.reportServ.getSales_today();
   }
 
-   getSales(storeId:string) : number{
+  getSales(storeId:string) : number{
 
     let sales: number;
 
-    this.franchiseOrders.subscribe(data => {
+    if (this.franchiseOrders) {
+      this.franchiseOrders.subscribe(data => {
 
-      data.find( found => {
-        if (found.store_id == storeId) {
-          sales = found.sales_today;
-        }
+        data.find( found => {
+          if (found.store_id == storeId) {
+            sales = found.sales_today;
+          }
+        });
+  
       });
-
-    });
+    }
+    
 
     return sales;
   }

@@ -56,7 +56,7 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
   }
 
   loadTable(){
-    this.ordersRange.pipe(untilDestroyed(this),debounceTime(500))
+    this.ordersRange.pipe(untilDestroyed(this),debounceTime(5000))
                     .subscribe( stores => {
       
       if (stores) {
