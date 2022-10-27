@@ -12,7 +12,7 @@
             <div class="input-group">
                 <button cButton color="secondary" (click)="generateReport()">Generate</button>
                 <input  class="form-control" placeholder="Target date" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelectTarget($event)" [readonly]="true">
-                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button" color="secondary"></button>
+                <button class="btn btn-secondary calendar" (click)="d.toggle()" type="button" color="secondary"></button>
             </div>
         </div>
 
@@ -20,12 +20,12 @@
             <div class="input-group">
                 <button cButton color="secondary" (click)="generateReport()">Generate</button>
                 <input  class="form-control" placeholder="From date" name="fromdate" (dateSelect)="onDateSelectFrom($event)" ngModel="fromDate" ngbDatepicker #a="ngbDatepicker"[readonly]="true" >
-                <button class="btn btn-outline-secondary calendar" (click)="a.toggle()" type="button"></button>
+                <button class="btn btn-secondary calendar" (click)="a.toggle()" type="button"></button>
 
                 <span class="separator">to</span>
 
                 <input  class="form-control" placeholder="Target date" name="targetdate" (dateSelect)="onDateSelectTarget($event)" ngModel="targetDate" ngbDatepicker #b="ngbDatepicker" [readonly]="true">
-                <button class="btn btn-outline-secondary calendar" (click)="b.toggle()" type="button"></button>
+                <button class="btn btn-secondary calendar" (click)="b.toggle()" type="button"></button>
             </div>
         </div>
     </form>
@@ -46,7 +46,9 @@
                 <c-card-body>
                     <mat-tab-group (selectedTabChange)="setTotal($event)" dynamicHeight>
                         <mat-tab *ngFor="let store of (franchiseStores | async)" label="{{store.store_name}}">
-                            <app-table-paginate [storeId]="store.store_id" [storeName]="store.store_name"></app-table-paginate>
+                            <app-table-paginate [orderType]="dine"  [storeId]="store.store_id" [storeName]="store.store_name"></app-table-paginate>
+                            <br>
+                            <app-table-paginate [orderType]="panda" [storeId]="store.store_id" [storeName]="store.store_name"></app-table-paginate>
                         </mat-tab>
                     </mat-tab-group>
                 </c-card-body>

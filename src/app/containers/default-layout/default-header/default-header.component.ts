@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-
 import { ClassToggleService, HeaderComponent } from '@coreui/angular';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 
 @Component({
   selector: 'app-default-header',
@@ -15,7 +15,12 @@ export class DefaultHeaderComponent extends HeaderComponent {
   public newTasks = new Array(5)
   public newNotifications = new Array(5)
 
-  constructor(private classToggler: ClassToggleService) {
+  constructor(private classToggler: ClassToggleService,
+              private authServ: AuthenticationService) {
     super();
+  }
+
+  logOut(){
+    this.authServ.logOut();
   }
 }

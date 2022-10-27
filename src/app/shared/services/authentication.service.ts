@@ -2,9 +2,10 @@ import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from "@angular/fire/compat/auth";
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Router } from '@angular/router';
-import { catchError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { collections } from "src/app/shared/constants/enum";
-import {UntilDestroy}  from '@ngneat/until-destroy';
+import {UntilDestroy, untilDestroyed}  from '@ngneat/until-destroy';
+import { ReportsService } from './reports.service';
 
 @UntilDestroy()
 @Injectable({
@@ -13,9 +14,11 @@ import {UntilDestroy}  from '@ngneat/until-destroy';
 export class AuthenticationService {
 
   userData:any;
+  authState: Observable<any>;
 
   constructor(private afStore: AngularFirestore,
               private ngFireAuth: AngularFireAuth,
+              private reportServ: ReportsService,
               public router: Router,
               public ngZone: NgZone) { 
 
@@ -37,10 +40,8 @@ export class AuthenticationService {
     return new Promise<any>((resolve,reject) => {
       
       this.ngFireAuth.signInWithEmailAndPassword(email, password)
-                      .catch(error => {
-                        reject(error);
-                      })
-                      .then( cred => {
+                     .catch(error => {reject(error);})
+                     .then( cred => {
         if (cred) {
   
           this.afStore.collection('servidor_franchise').doc(cred.user.uid).get().subscribe( franchise => {
@@ -55,12 +56,35 @@ export class AuthenticationService {
               };
 
               localStorage.setItem('user', JSON.stringify(this.userData));
-              this.router.navigateByUrl('/dashboard');
+              this.reportServ.initDashboard();
+              this.router.navigateByUrl('/home/dashboard');
               resolve(true);
             }
           });
         }
       });  
+    })
+  }
+
+  async isLoggedIn() : Promise<boolean>{
+    return await new Promise((resolve)=>{
+      this.ngFireAuth.onAuthStateChanged((creds)=>{
+        if (creds) {
+          resolve(true);
+        }else{
+          resolve(false);
+        }
+      })
+    });
+  }
+
+  logOut(){
+    
+    this.ngFireAuth.signOut().then((data)=>{
+      localStorage.removeItem('user');
+      this.router.navigateByUrl('/login');
+    }).catch((reason)=> {
+      console.log(reason);
     })
 
   }

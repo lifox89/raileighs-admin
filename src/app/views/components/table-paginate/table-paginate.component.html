@@ -1,6 +1,6 @@
 <div class="mat-elevation-z8">
 
-    <p>Order Timeline</p>
+    <p>{{getHeader(orderType)}}</p>
     <table mat-table matTableExporter #exportOrder="matTableExporter" [dataSource]="dataSource" matSort #sortOrders="matSort" (matSortChange)="announceSortChange($event)">
   
       <ng-container matColumnDef="position">
@@ -12,14 +12,20 @@
         <th mat-header-cell *matHeaderCellDef> Order Time </th>
         <td mat-cell *matCellDef="let element"> {{element.order_time | date:'MMM dd - HH:mm'}} </td>
       </ng-container>
-      <ng-container matColumnDef="payment_type">
+
+      <ng-container matColumnDef="payment_type" *ngIf="checkOrderType()">
         <th mat-header-cell *matHeaderCellDef> Payment Type </th>
-        <td mat-cell *matCellDef="let element"> {{element.payment_type | uppercase}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.payment_type | titlecase }} </td>
       </ng-container>
   
-      <ng-container matColumnDef="payment_reference">
+      <ng-container matColumnDef="payment_reference" *ngIf="checkOrderType()">
         <th mat-header-cell *matHeaderCellDef> Payment Ref </th>
-        <td mat-cell *matCellDef="let element"> {{element.payment_reference | uppercase}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.payment_reference }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="order_tableno" *ngIf="!checkOrderType()">
+        <th mat-header-cell *matHeaderCellDef> Order Reference</th>
+        <td mat-cell *matCellDef="let element"> {{element.order_tableno }} </td>
       </ng-container>
 
       <ng-container matColumnDef="order_total">
@@ -27,36 +33,37 @@
         <td mat-cell *matCellDef="let element" class="order-total"> {{element.order_total | currency: '' + ' '}} </td>
       </ng-container>
   
-      <tr mat-header-row *matHeaderRowDef="orderColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: orderColumns;"></tr>
+      <tr mat-header-row *matHeaderRowDef="getHeaderCol()"></tr>
+      <tr mat-row *matRowDef="let row; columns: getHeaderCol();"></tr>
     </table>
     
     <div class="row">
-        <div class="col-4">
-            <button cButton 
-                    *ngIf="_show"
-                    class="button-download" 
-                    color="secondary" 
-                    (click)="exportOrder.exportTable('xls', {fileName: storeName + ' Sales', sheet: storeName})">Download as CSV</button>
-        </div>
-        
-        <div class="col-2"></div>
 
-        <div class="col-6">
-            <mat-paginator 
-                #paginatorOrder="matPaginator"
-                [pageSize]="5"
-                [pageSizeOptions]="[5, 10, 20]"
-                showFirstLastButtons 
-                aria-label="Select Page">
-            </mat-paginator>
-        </div>
+      <div class="col-1">
+          <button cButton 
+                  *ngIf="_show && dataSource.data.length"
+                  class="button-download" 
+                  color="secondary" 
+                  (click)="exportOrder.exportTable('xls', {fileName: storeName + ' Sales', sheet: storeName})">
+                  <svg cIcon name="cil-save" ></svg>  
+          </button>
+      </div>
+
+      <div class="col-11">
+          <mat-paginator 
+              #paginatorOrder="matPaginator"
+              [pageSize]="5"
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons 
+              aria-label="Select Page">
+          </mat-paginator>
+      </div>
     </div>
 
 
     <br><br>
 
-    <p>Item Summary</p>
+    <p>{{getItemHeader(orderType)}}</p>
     <table mat-table matTableExporter #exportItems="matTableExporter" [dataSource]="itemSource" matSort #sortItems="matSort" (matSortChange)="announceSortChange($event)">
   
       <ng-container matColumnDef="position">
@@ -79,26 +86,28 @@
     </table>
     
     <div class="row">
-        <div class="col-4">
-            <button cButton 
-                    *ngIf="_show" 
-                    class="button-download" 
-                    color="secondary" 
-                    (click)="exportItems.exportTable('xls', {fileName: storeName + ' Item Summary', sheet: storeName})">Download as CSV</button>
-        </div>
-        
-        <div class="col-2"></div>
+      <div class="col-1">
+          <button cButton 
+                  *ngIf="_show && itemSource.data.length" 
+                  class="button-download" 
+                  color="secondary" 
+                  (click)="exportItems.exportTable('xls', {fileName: storeName + ' Item Summary', sheet: storeName})">
 
-        <div class="col-6">
-            <mat-paginator 
-                #paginatorItems="matPaginator"
-                [pageSize]="5"
-                [pageSizeOptions]="[5, 10, 20]"
-                showFirstLastButtons 
-                aria-label="Select Page">
-            </mat-paginator>
-        </div>
+            <svg cIcon name="cil-save" ></svg>
+
+          </button>
+      </div>
+
+      <div class="col-11">
+        <mat-paginator 
+            #paginatorItems="matPaginator"
+            [pageSize]="5"
+            [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons 
+            aria-label="Select Page">
+        </mat-paginator>
+    </div>
     </div>
 
-
+    <br>
 </div>

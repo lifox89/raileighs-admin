@@ -1,22 +1,28 @@
-<table [striped]="true" cTable>
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Order Time</th>
-            <th scope="col">Payment Type</th>
-            <th scope="col">Payment Reference</th>
-            <th scope="col" class="order-total">Order Total</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr *ngFor="let order of ( orders | async ), let idx=index">
-            <th>{{idx + 1}}</th>
-            <td>{{order.order_time | date:'HH:mm'}}</td>
-            <td>{{order.payment_type}}</td>
-            <td>{{order.payment_reference}}</td>
-            <td class="order-total">{{order.order_total | currency: '' + ' '}}</td>
-        </tr>
-    </tbody>
-
-</table>
+<c-card class="order-summary">
+    <c-card-body>
+        <table [striped]="true" cTable>
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Order Time</th>
+                    <th scope="col">Order Type</th>
+                    <th scope="col">Payment Type</th>
+                    <th scope="col">Payment Reference</th>
+                    <th scope="col" class="order-total">Order Total</th>
+                </tr>
+            </thead>
+        
+            <tbody>
+                <tr *ngFor="let order of ( orders | async ), let idx=index">
+                    <th>{{idx + 1}}</th>
+                    <td>{{order.order_time | date:'HH:mm'}}</td>
+                    <td>{{ (order.order_type).replace('_',' ') | titlecase }}</td>
+                    <td>{{order.payment_type | titlecase }}</td>
+                    <td>{{order.payment_reference}}</td>
+                    <td class="order-total">{{order.order_total | currency: '' + ' '}}</td>
+                </tr>
+            </tbody>
+        
+        </table>
+    </c-card-body>
+</c-card>

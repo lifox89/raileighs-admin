@@ -3,7 +3,7 @@ import { INavData } from '@coreui/angular';
 export const navItems: INavData[] = [
   {
     name: 'Dashboard',
-    url: '/dashboard',
+    url: '/home/dashboard',
     iconComponent: { name: 'cil-speedometer' },
   },
   {
@@ -12,31 +12,34 @@ export const navItems: INavData[] = [
     children:[
       {
         name: 'Sales',
-        url: '/components/reports',
+        url: '/home/components/reports',
         iconComponent: { name: 'cil-dollar' },
       },
       {
         name: 'Expenses',
-        url: '/components/expenses',
+        url: '/home/components/expenses',
         iconComponent: { name: 'cil-dollar' },
       },
-      {
-        name: 'Charts',
-        url: '/components/charts',
-        iconComponent: { name: 'cil-chart' },
-      },
-      {
-        name: 'Forecast',
-        url: '/components/forecasts',
-        iconComponent: { name: 'cil-chart' },
-      },
+      // {
+      //   name: 'Charts',
+      //   url: '/components/charts',
+      //   iconComponent: { name: 'cil-chart' },
+      // },
+      // {
+      //   name: 'Forecast',
+      //   url: '/components/forecasts',
+      //   iconComponent: { name: 'cil-chart' },
+      // },
     ],
   },
-  {
-    name: 'Inventories',
-    url: '/components/inventories',
-    iconComponent: { name: 'cil-puzzle' },
-  },
+
+  // {
+  //   name: 'Inventories',
+  //   url: '/components/inventories',
+  //   iconComponent: { name: 'cil-puzzle' },
+  // },
+
+
   // {
   //   title: true,
   //   name: 'Theme'

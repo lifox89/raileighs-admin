@@ -3,8 +3,8 @@
   #sidebar="cSidebar"
   class="d-print-none sidebar sidebar-fixed"
   id="sidebar"
-  visible
->
+  visible>
+
   <c-sidebar-brand
     [brandFull]="{
       src: 'assets/img/brand/brand-logo-2.png',
@@ -13,41 +13,40 @@
       padding: 10,
       alt: 'Raileighs Logo'
     }"
+
     [brandNarrow]="{
-      src: 'assets/img/brand/brand-logo.png',
+      src: 'assets/img/brand/brand-icon.png',
       width: 46,
       height: 46,
       padding: 10,
       alt: 'Raileighs Logo'
     }"
-    routerLink="./"
-  >
+    routerLink="/home/dashboard">
   </c-sidebar-brand>
-    <perfect-scrollbar [config]="perfectScrollbarConfig">
-  <!--  [perfectScrollbar]="perfectScrollbarConfig"-->
-  <c-sidebar-nav
-    [navItems]="navItems"
-  >
-  </c-sidebar-nav>
-    </perfect-scrollbar>
-  <c-sidebar-toggler
+
+  <perfect-scrollbar [config]="perfectScrollbarConfig">
+    <c-sidebar-nav [navItems]="navItems"></c-sidebar-nav>
+  </perfect-scrollbar>
+
+  <!-- <c-sidebar-toggler
     *ngIf="!sidebar.narrow"
     toggle="unfoldable"
-    cSidebarToggle="sidebar"
-  ></c-sidebar-toggler>
+    cSidebarToggle="sidebar">
+  </c-sidebar-toggler> -->
+
 </c-sidebar>
 
 <!--main-->
 <div class="wrapper d-flex flex-column min-vh-100 bg-light dark:bg-transparent">
   <!--app-header-->
-  <app-default-header class="mb-4 d-print-none header header-sticky" position="sticky" sidebarId="sidebar"></app-default-header>
+  <app-default-header class="d-print-none header header-sticky" position="sticky" sidebarId="sidebar"></app-default-header>
   <!--app-body-->
-  <div class="body flex-grow-1 px-3">
+  <div class="body flex-grow-1 px-3" class="body-background">
     <c-container breakpoint="lg" class="h-auto">
       <router-outlet></router-outlet>
     </c-container>
   </div>
   <!--app footer-->
-  <app-default-footer></app-default-footer>
+  <!-- <app-default-footer></app-default-footer> -->
 </div>
 

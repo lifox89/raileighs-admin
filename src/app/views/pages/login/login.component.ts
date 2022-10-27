@@ -30,22 +30,18 @@ export class LoginComponent {
   signIn(){
     if (this.signinForm.valid) {
       this.authServices.signIn( this.signinForm.get('email').value , this.signinForm.get('password').value )
-                       .then( result => {
-                          console.log(result);
-                       }).catch( error => {
-                        this.onVisibleChange(true);
+                       .catch( () => {
+                          this.onVisibleChange(true);
                        })
     }
   }
 
   private initForm(): void {
     this.signinForm = this.formBuilder.group({
-      email: this.formBuilder.control('', Validators.required),
+      email:    this.formBuilder.control('', Validators.required),
       password: this.formBuilder.control('', Validators.required)
     });
   }
-
-  
 
   onVisibleChange(eventValue: boolean) {
     this.visible = eventValue;

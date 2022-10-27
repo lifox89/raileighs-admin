@@ -1,7 +1,4 @@
-table {
-    width: 100%;
-}
-  
+
 p{
     background-color: lightgray;
     padding: .5em;
@@ -11,21 +8,10 @@ p{
     text-align: center;
 }
 
-.calendar{
-    border-radius: 0 5px 5px 0 !important;
+table {
+    width: 100%;
 }
 
-.separator{
-    padding: 5px;
-}
-
-.picker{
-    float: right;
-}
-
-.second-form{
-    padding-top: 1em;
-}
 
 .summary-total{
     text-align: right;
@@ -33,20 +19,8 @@ p{
 
 .order-total {
     text-align: right !important;
-    
-    div{
-        float: right;
-    }
 }
 
 .button-download{
     margin-top: 1em;
 }
-
-
-button{
-    position: absolute;
-    margin-left: 1em;
-}
-
-

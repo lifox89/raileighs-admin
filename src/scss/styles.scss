@@ -180,3 +180,48 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-tab-group.mat-primary .mat-ink-bar, .mat-tab-nav-bar.mat-primary .mat-ink-bar {
   background-color: $secondary !important;
 }
+
+.mat-column-expense_amount{
+  .mat-sort-header-container{
+      float: right !important;
+      padding-right: 0px !important;
+  }
+}
+
+.mat-column-order_total{
+  .mat-sort-header-container{
+      float: right !important;
+  }
+}
+
+th.mat-header-cell:last-of-type{
+  padding-right: 0px !important;
+}
+
+
+.body-background{
+  background-image: url('../assets/img/brand/wrapper.jpg');
+  background-repeat:repeat-y;
+  background-size: cover;
+  background-position-y: center;
+  min-height: 80vh !important;
+  padding-bottom: 1em;
+  padding-top: 1em;
+}
+
+
+.container-blur{
+  background-color: rgba(255, 255, 255, .15);  
+}
+
+:root{
+  --primary:   #3C5148;
+  --secondary: #8bc7ad;
+  --tertiary:  #DFE9EF;
+  --fourth:    #C9B4A0;
+  --fifth:     #845C3D;
+  --success:   #2eb85c;
+  --info:      #39f;
+  --warning:   #f9b115;
+  --danger:    #e55353;
+}

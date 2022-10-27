@@ -6,3 +6,10 @@ export enum collections {
     servidor_store_request,
     servidor_users,
 }
+
+
+export enum order_type {
+    DINE_IN = 'dine_in',
+    ONLINE  = 'online',
+    PANDA   = 'panda'
+}

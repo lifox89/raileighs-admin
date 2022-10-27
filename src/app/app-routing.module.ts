@@ -6,6 +6,7 @@ import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
 import { LoginComponent } from './views/pages/login/login.component';
 import { RegisterComponent } from './views/pages/register/register.component';
+import { UserAuthGuard } from "./user-auth.guard";
 
 const routes: Routes = [
   {
@@ -14,19 +15,23 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: '',
+    path: 'home',
     component: DefaultLayoutComponent,
+    canActivate:[UserAuthGuard],
     data: {
       title: 'Home'
     },
+
     children: [
       {
         path: 'dashboard',
+        canActivate:[UserAuthGuard],
         loadChildren: () =>
           import('./views/dashboard/dashboard.module').then((m) => m.DashboardModule)
       },
       {
         path: 'components',
+        canActivate:[UserAuthGuard],
         loadChildren: () =>
           import('./views/components/components.module').then((m) => m.ComponentsModule)
       },
@@ -101,11 +106,13 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
+    canActivate:[UserAuthGuard],
     data: {
       title: 'Register Page'
     }
   },
-  {path: '**', redirectTo: 'dashboard'}
+
+  {path: '**', redirectTo: '404'}
 ];
 
 @NgModule({

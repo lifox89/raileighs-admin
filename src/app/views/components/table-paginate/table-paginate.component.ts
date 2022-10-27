@@ -6,6 +6,7 @@ import { debounceTime, Observable } from 'rxjs';
 import { ReportsService } from 'src/app/shared/services/reports.service';
 import { MatSort, Sort} from '@angular/material/sort';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
+import { order_type } from 'src/app/shared/constants/enum';
 
 @UntilDestroy()
 @Component({
@@ -16,16 +17,22 @@ import {LiveAnnouncer} from '@angular/cdk/a11y';
 export class TablePaginateComponent implements OnInit, AfterViewInit {
 
   @ViewChild('paginatorOrder') orderpaginator: MatPaginator;
-  @ViewChild('paginatorItems') itemPaginator: MatPaginator;
-  @ViewChild('sortOrders') sortOrders = new MatSort();
-  @ViewChild('sortItems') sortItems = new MatSort();
-  @Input() storeId = '';
-  @Input() storeName = '';
+  @ViewChild('paginatorItems') itemPaginator:  MatPaginator;
 
-  public dataSource = new MatTableDataSource<any>([]);
-  public itemSource = new MatTableDataSource<any>([]);
+  @ViewChild('sortOrders') sortOrders = new MatSort();
+  @ViewChild('sortItems') sortItems   = new MatSort();
+
+  @Input() storeId   = '';
+  @Input() storeName = '';
+  @Input() orderType = '';
+
+  public dataSource  = new MatTableDataSource<any>([]);
+  public itemSource  = new MatTableDataSource<any>([]);
+
   public ordersRange : Observable<any[]>;
+  
   public orderColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference','order_total'];
+  public pandaColumns: string[] = ['position', 'order_time', 'order_tableno','order_total'];
   public itemColumns:  string[] = ['position', 'item_name', 'item_qty'];
 
 
@@ -33,20 +40,21 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
 
   constructor( private reportServ: ReportsService,
                private _liveAnnouncer: LiveAnnouncer) { 
-    
   }
 
   ngAfterViewInit() {
 
     this.ordersRange = new Observable<any[]>;
+    
     this.dataSource.data = [];
     this.itemSource.data = [];
 
     this.dataSource.paginator = this.orderpaginator;
-    this.dataSource.sort = this.sortOrders;
-
     this.itemSource.paginator = this.itemPaginator;
+
+    this.dataSource.sort = this.sortOrders;
     this.itemSource.sort = this.sortItems;
+
   } 
   
   
@@ -55,13 +63,51 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
     this.loadTable();
   }
 
+  getHeaderCol(){
+    return  ( this.orderType == order_type.DINE_IN ? this.orderColumns : this.pandaColumns);
+  }
+
+  checkOrderType(){
+    return ( this.orderType == order_type.DINE_IN ? true : false)
+  }
+
+  getHeader( type : string ){
+    let str:string;
+    switch (type) {
+
+      case order_type.DINE_IN:
+        str = 'Store Orders'
+        break;
+      case order_type.PANDA:
+        str = 'Food Panda Orders'
+        break;
+    }
+
+    return str;
+  }
+
+  getItemHeader( type : string ){
+    let str:string;
+    switch (type) {
+
+      case order_type.DINE_IN:
+        str = 'Store Items'
+        break;
+      case order_type.PANDA:
+        str = 'Food Panda Items'
+        break;
+    }
+
+    return str;
+  }
+
   loadTable(){
-    this.ordersRange.pipe(untilDestroyed(this),debounceTime(5000))
+    this.ordersRange.pipe(untilDestroyed(this),debounceTime(2000))
                     .subscribe( stores => {
       
       if (stores) {
 
-        this.reportServ.getOrdersItemsRange(this.storeId)
+        this.reportServ.getOrdersItemsRange(this.storeId, this.orderType)
                        .pipe(untilDestroyed(this))
                        .subscribe( items => {
           if (items) {
@@ -75,7 +121,7 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
 
         if (res) {
           this._show = true;
-          this.dataSource.data = res.orders;
+          this.dataSource.data = res.orders.filter( order => order.order_type == (this.orderType != order_type.PANDA ? order_type.DINE_IN : order_type.PANDA));
         }
       }
     });

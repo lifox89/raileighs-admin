@@ -1,5 +1,5 @@
 
-<span class="dashboard-title">Today's Sales</span>
+<!-- <span class="dashboard-title">Today's Sales</span> -->
 
 <c-row *ngIf="(franchiseStores|async)">
     <c-col sm="6" xl="3" *ngFor="let store of (franchiseStores | async ), let idx = index">
@@ -15,8 +15,8 @@
                 <svg cIcon class="text-high-emphasis-inverse" name="cilOptions"></svg>
             </button>
             <ul cDropdownMenu>
-                <li><a [routerLink]="['/components/orders']" [queryParams]="{ id: store.store_id, view: 'orders' }" cDropdownItem>View Orders</a></li>
-                <li><a [routerLink]="['/components/items']"  [queryParams]="{ id: store.store_id, view: 'items'  }" cDropdownItem>View Items</a></li>
+                <li><a [routerLink]="['/home/components/orders']" [queryParams]="{ id: store.store_id, view: 'orders' }" cDropdownItem>View Orders</a></li>
+                <li><a [routerLink]="['/home/components/items']"  [queryParams]="{ id: store.store_id, view: 'items'  }" cDropdownItem>View Items</a></li>
             </ul>
             </c-dropdown>
         </ng-template>

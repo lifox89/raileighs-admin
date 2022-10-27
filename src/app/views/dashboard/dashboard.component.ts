@@ -55,8 +55,8 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.setData();
-    this.reportServ.fetchStores();
-    this.reportServ.fetchSales_today(null);
+    // this.reportServ.fetchStores();
+    // this.reportServ.fetchSales_today(null);
 
     this.getStores();
     this.getOrders();
@@ -84,14 +84,15 @@ export class DashboardComponent implements OnInit {
     let sales: number;
 
     if (this.franchiseOrders) {
-      this.franchiseOrders.subscribe(data => {
-
-        data.find( found => {
-          if (found.store_id == storeId) {
-            sales = found.sales_today;
-          }
-        });
-  
+      this.franchiseOrders.pipe(untilDestroyed(this))
+                          .subscribe(data => {
+        if (data) {
+          data.find( found => {
+            if (found.store_id == storeId) {
+              sales = found.sales_today;
+            }
+          });
+        }
       });
     }
     

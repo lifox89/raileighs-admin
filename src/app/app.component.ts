@@ -4,6 +4,8 @@ import { Router, NavigationEnd } from '@angular/router';
 import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from './icons/icon-subset';
 import { Title } from '@angular/platform-browser';
+import { ReportsService } from './shared/services/reports.service';
+import { AuthenticationService } from './shared/services/authentication.service';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -16,6 +18,8 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private titleService: Title,
+    private reportServ: ReportsService,
+    private authServ: AuthenticationService,
     private iconSetService: IconSetService
   ) {
     titleService.setTitle(this.title);
@@ -29,5 +33,16 @@ export class AppComponent implements OnInit {
         return;
       }
     });
+
+    this.initializeData();
   }
+
+  initializeData(){
+    this.authServ.isLoggedIn().then( (bol) => {
+      if (bol) {
+        this.reportServ.initDashboard();
+      }
+    });
+  }
+
 }

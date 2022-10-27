@@ -1,26 +1,35 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { user } from "src/app/shared/model/user";
-import { Observable } from 'rxjs';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { order_type } from "src/app/shared/constants/enum";
 
-UntilDestroy()
+@UntilDestroy()
 @Injectable({
   providedIn: 'root'
 })
 export class ReportsService {
 
   private user: user;
-  private franchiseOrders       = new BehaviorSubject<any[]>(undefined);
-  private franchiseStores       = new BehaviorSubject<any>(undefined);
-  private franchiseOrdersRange  = new BehaviorSubject<any[]>(undefined);
-  
-  private _spinnerState = new BehaviorSubject<boolean>(undefined);
+
+  private franchiseOrders        = new BehaviorSubject<any[]>(undefined);
+  private franchiseStores        = new BehaviorSubject<any[]>(undefined);
+
+  private franchiseOrdersRange   = new BehaviorSubject<any[]>(undefined);
+  private franchiseExpensesRange = new BehaviorSubject<any[]>(undefined);
+
+  private _spinnerState          = new BehaviorSubject<boolean>(undefined);
 
   constructor( private firestore : AngularFirestore) { 
 
+  }
+
+  // Initialize Dashboard
+  initDashboard(){
+    this.fetchStores();
+    this.fetchSales_today(null);
   }
 
 
@@ -98,16 +107,20 @@ export class ReportsService {
     return items.asObservable();
   }
 
-  public getOrdersItemsRange(storeId:string){
+  public getOrdersItemsRange(storeId:string, orderType: string){
 
     let items = new BehaviorSubject<any[]>(undefined);
     let array = [];
 
     if (this.franchiseOrdersRange.value) {
+
       this.franchiseOrdersRange.value.find( found => {
 
         if (found.store_id == storeId) {
-          found.orders.forEach( order => {
+
+          found.orders.filter(elem=>elem.order_type == (orderType != order_type.PANDA ? order_type.DINE_IN : order_type.PANDA))
+                      .forEach( order => {
+
             order.order_items.forEach( item => {
 
               let result = array.find( dat => {
@@ -132,6 +145,10 @@ export class ReportsService {
       });
     }
     return items.asObservable();
+  }
+
+  public getExpensesRange(){
+    return this.franchiseExpensesRange.asObservable();
   }
 
 
@@ -167,6 +184,64 @@ export class ReportsService {
     }
   }
 
+  public fetchExpenses( from: any, target: any){
+
+    let expenses : Array<any> = [];
+    let start: any;
+    let end: any;
+
+    if (from) { // If not null, range date is requested
+      start = this.startofDay(from);
+      end   = this.endofDay(target);
+    }else{ // For single day request
+      start = this.startofDay(target);
+      end   = this.endofDay(target);
+
+    }
+
+    if (target) {
+      this.franchiseExpensesRange.next([]);
+    }
+
+    this.user = JSON.parse(localStorage.getItem('user'));
+
+    if (this.user) {
+      this.user.stores.forEach(store=>{
+
+        this.firestore.collection('servidor-accounts').doc(store)
+                      .collection('storeExpenses',ref => ref.orderBy('expense_time')
+                      .where("expense_time",">=", start)
+                      .where("expense_time","<=", end))
+                      .get().pipe(untilDestroyed(this))
+                      .subscribe( data => {
+
+                        if (data) {
+
+                          let temp = {
+                            store_id : store,
+                            expense_today: 0,
+                            expenses: [],
+                          };
+  
+                          data.forEach(dat => {
+                            let item:any = dat.data();
+                            temp.expense_today += item.expense_amount;
+                            temp.expenses.push(dat.data());
+                          });
+  
+                          if (!expenses.find( found => {
+                            return (found.store_id == temp.store_id)})) {
+                              expenses.push(temp);
+                          }
+                        }
+                        
+                      });
+        });
+
+        this.franchiseExpensesRange.next(expenses);
+        
+    }
+  }
 
   public fetchSales_today( date: any){
     let orders : Array<any> = [];
@@ -186,7 +261,8 @@ export class ReportsService {
                       .collection('ordersArchive',ref => ref.orderBy('order_time')
                       .where("order_time",">=", start)
                       .where("order_time","<=", end))
-                      .get().subscribe( data => {
+                      .get().pipe(untilDestroyed(this))
+                      .subscribe( data => {
 
                         let temp = {
                           store_id : store,
@@ -205,15 +281,13 @@ export class ReportsService {
                             orders.push(temp);
                         }
                       });
-        });
+      });
 
-        if (date) {
-          this.setSpinnerState(false);
-          this.franchiseOrdersRange.next(orders);
-        }else{
-          this.setSpinnerState(false);
-          this.franchiseOrders.next(orders);
-        }
+      if (date) {
+        this.franchiseOrdersRange.next(orders);
+      }else{
+        this.franchiseOrders.next(orders);
+      }
         
     }
   }

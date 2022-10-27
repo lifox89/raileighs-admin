@@ -1,10 +1,11 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {NgbCalendar, NgbInputDatepickerConfig} from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import { ReportsService } from 'src/app/shared/services/reports.service';
-import { debounceTime, Observable, Subscription } from 'rxjs';
+import { debounceTime, Observable } from 'rxjs';
 import { MatSnackBar} from '@angular/material/snack-bar';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { order_type } from "src/app/shared/constants/enum";
 
 @UntilDestroy()
 @Component({
@@ -13,8 +14,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['./reports.component.scss']
 })
 export class ReportsComponent implements OnInit {
-
-  
 
   fromDate: any;
   targetDate: any;
@@ -30,14 +29,18 @@ export class ReportsComponent implements OnInit {
   ordersRange : Observable<any[]>;
   franchiseStores: Observable<any[]>;
 
+  dine : string; 
+  panda : string;
+
   constructor(  private reportServ:  ReportsService,
                 private snackBar:    MatSnackBar,
                 public  config:      NgbInputDatepickerConfig, 
                 public  calendar:    NgbCalendar ) {
-    
-    this.reportServ.fetchStores();
-    this.ordersRange = this.reportServ.getSales_range();
 
+    this.dine  = order_type.DINE_IN;
+    this.panda = order_type.PANDA;
+
+    this.ordersRange = this.reportServ.getSales_range();
     config.minDate = {year: 2020, month: 1, day: 1};
     config.maxDate = {year: 2099, month: 12, day: 31};
     config.outsideDays = 'hidden';

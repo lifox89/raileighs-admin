@@ -40,6 +40,7 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 
 
 import { TablePaginateComponent } from './table-paginate/table-paginate.component';
+import { ExpenseTableComponent } from './expense-table/expense-table.component';
 import { ChartsComponent } from './charts/charts.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
 import { ExpensesComponent } from './expenses/expenses.component';
@@ -53,7 +54,8 @@ import { ExpensesComponent } from './expenses/expenses.component';
     TablePaginateComponent,
     ChartsComponent,
     ForecastsComponent,
-    ExpensesComponent
+    ExpensesComponent,
+    ExpenseTableComponent
    ],
   imports: [
     CommonModule,

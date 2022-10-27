@@ -1,1 +1,56 @@
-<p>expenses works!</p>
+<div>
+    <form class="row">
+
+        <div class="col-4">
+            <c-form-check sizing="xl" switch color="secondary" ngModel="switchbol">
+                <input cFormCheckInput type="checkbox" (click)="toggleSwitch()" />
+                <label cFormCheckLabel>{{ rangeText }}</label>
+            </c-form-check>
+        </div>
+        <div class="col-4" *ngIf="!switchbol"></div>
+        <div class="col-4 row-cols-sm-auto picker" *ngIf="!switchbol">
+            <div class="input-group">
+                <button cButton color="secondary" (click)="generateReport()">Generate</button>
+                <input  class="form-control" placeholder="Target date" name="dp" ngbDatepicker #d="ngbDatepicker" (dateSelect)="onDateSelectTarget($event)" [readonly]="true">
+                <button class="btn btn-secondary calendar" (click)="d.toggle()" type="button" color="secondary"></button>
+            </div>
+        </div>
+
+        <div class="col-8 row-cols-sm-auto picker" *ngIf="switchbol">
+            <div class="input-group">
+                <button cButton color="secondary" (click)="generateReport()">Generate</button>
+                <input  class="form-control" placeholder="From date" name="fromdate" (dateSelect)="onDateSelectFrom($event)" ngModel="fromDate" ngbDatepicker #a="ngbDatepicker"[readonly]="true" >
+                <button class="btn btn-secondary calendar" (click)="a.toggle()" type="button"></button>
+
+                <span class="separator">to</span>
+
+                <input  class="form-control" placeholder="Target date" name="targetdate" (dateSelect)="onDateSelectTarget($event)" ngModel="targetDate" ngbDatepicker #b="ngbDatepicker" [readonly]="true">
+                <button class="btn btn-secondary calendar" (click)="b.toggle()" type="button"></button>
+            </div>
+        </div>
+    </form>
+
+    <form class="row second-form">
+        <div class="col-12">
+            <c-card>
+                <c-card-header>
+                    <div class="row">
+                        <div class="col-6">Expenses Summary 
+                            <span>{{fromDate | date:'MMM dd, yyyy'}}</span>
+                            <span *ngIf="switchbol && ( fromDate && targetDate )"> to </span>
+                            <span>{{targetDate | date:'MMM dd, yyyy'}}</span>
+                        </div>
+                        <div class="col-6 summary-total" *ngIf="_total > -1">Total Sales: {{ _total | currency:'Php '}}</div>
+                    </div>
+                </c-card-header>
+                <c-card-body>
+                    <mat-tab-group (selectedTabChange)="setTotal($event)" dynamicHeight>
+                        <mat-tab *ngFor="let store of (franchiseStores | async)" label="{{store.store_name}}">
+                            <app-expense-table [storeId]="store.store_id" [storeName]="store.store_name"></app-expense-table>
+                        </mat-tab>
+                    </mat-tab-group>
+                </c-card-body>
+            </c-card>
+        </div>
+    </form>
+</div>
