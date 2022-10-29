@@ -33,11 +33,11 @@ export const navItems: INavData[] = [
     ],
   },
 
-  // {
-  //   name: 'Inventories',
-  //   url: '/components/inventories',
-  //   iconComponent: { name: 'cil-puzzle' },
-  // },
+  {
+    name: 'Inventories',
+    url: '/home/components/inventories',
+    iconComponent: { name: 'cil-puzzle' },
+  },
 
 
   // {

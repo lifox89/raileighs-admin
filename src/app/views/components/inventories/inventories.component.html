@@ -1,0 +1,106 @@
+<c-row>
+
+    <c-col xl="6" sm="12">
+        
+        <c-card>
+
+            <c-card-header>
+                Select Commissary 
+                <button (click)="openModal()" cButton color="secondary" class="header-button">Add New</button>
+            </c-card-header>
+
+            <c-card-body>
+
+                <c-row class="row">
+                    <c-col sm="12" lg="3" xl="3" md="6" class="nugget secondary" *ngFor="let comm of (commList|async)" (click)="openView(comm)">
+                        <p>{{comm.commissary_name}}</p>
+                    </c-col>
+                </c-row>
+                
+            </c-card-body>
+            
+        </c-card>
+    </c-col>
+
+    <c-col xl="6" sm="12">  
+
+    </c-col>
+
+</c-row>
+
+
+
+<c-modal #modalLg id="modalLg" size="lg" [visible]="visible" (visibleChange)="handleLiveDemoChange($event)">
+    <form [formGroup]="ngForm"  (ngSubmit)="addNew(ngForm.value)">
+        <c-modal-header>
+            <h5 cModalTitle>Create New Commissary</h5>
+        </c-modal-header>
+
+        <c-modal-body>
+            
+
+                <div [cFormFloating]="true" class="mb-3">
+                    <input cFormControl id="commName" placeholder="" type="text" formControlName="comm_name" />
+                    <label cLabel for="commName">Commissary Name</label>
+                </div>
+
+                <div [cFormFloating]="true" class="mb-3">
+                    <input cFormControl id="commAddress" placeholder="" type="text" formControlName="comm_address"/>
+                    <label cLabel for="commAddress">Commissary Address</label>
+                </div>
+
+                <c-input-group class="mb-3">
+                    <input aria-label="Commissary Manager" cFormControl placeholder="Manager's name" formControlName="manager_name"/>
+                    <span cInputGroupText>#</span>
+                    <input aria-label="Contact No." cFormControl placeholder="Contact No." formControlName="contact_no" type="number"/>
+                </c-input-group>
+            
+
+        </c-modal-body>
+
+        <c-modal-footer>
+            <button cButton color="fourth"     class="header-button" (click)="openModal()">Close</button>
+            <button cButton color="secondary" class="header-button" [disabled]="!ngForm.valid" type="submit" >Create</button>
+        </c-modal-footer>
+
+    </form>
+</c-modal>
+
+
+<c-modal #modalView id="modalView" size="lg" [visible]="viewBol" (visibleChange)="viewChange($event)">
+    <form [formGroup]="viewForm">
+        <c-modal-header>
+            <h5 cModalTitle>Commissary Information</h5>
+        </c-modal-header>
+
+        <c-modal-body>
+            
+
+                <div [cFormFloating]="true" class="mb-3">
+                    <input cFormControl id="commName" placeholder="" type="text" formControlName="comm_name" [readonly]="true"/>
+                    <label cLabel for="commName">Commissary Name</label>
+                </div>
+
+                <div [cFormFloating]="true" class="mb-3">
+                    <input cFormControl id="commAddress" placeholder="" type="text" formControlName="comm_address" [readonly]="true"/>
+                    <label cLabel for="commAddress">Commissary Address</label>
+                </div>
+
+                <c-input-group class="mb-3">
+                    <input aria-label="Commissary Manager" cFormControl placeholder="Manager's name" formControlName="manager_name" [readonly]="true"/>
+                    <span cInputGroupText>#</span>
+                    <input aria-label="Contact No." cFormControl placeholder="Contact No." formControlName="contact_no" type="number" [readonly]="true"/>
+                </c-input-group>
+            
+
+        </c-modal-body>
+
+        <c-modal-footer>
+            <button cButton color="fourth"     class="header-button" (click)="openView(null)">Close</button>
+        </c-modal-footer>
+
+    </form>
+</c-modal>
+
+
+

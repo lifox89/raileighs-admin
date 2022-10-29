@@ -19,6 +19,7 @@ import { IconModule } from '@coreui/icons-angular';
 import { ChartjsModule } from '@coreui/angular-chartjs';
 import { WidgetsModule } from '../widgets/widgets.module';
 
+
 import { ComponentsRoutingModule } from './components-routing.module';
 import { NgbDatepickerModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -36,7 +37,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableExporterModule } from 'mat-table-exporter';
-
+import { ModalModule } from '@coreui/angular';
 
 
 import { TablePaginateComponent } from './table-paginate/table-paginate.component';
@@ -44,6 +45,7 @@ import { ExpenseTableComponent } from './expense-table/expense-table.component';
 import { ChartsComponent } from './charts/charts.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
 import { ExpensesComponent } from './expenses/expenses.component';
+import { InventoriesComponent } from './inventories/inventories.component';
 
 
 @NgModule({
@@ -55,11 +57,13 @@ import { ExpensesComponent } from './expenses/expenses.component';
     ChartsComponent,
     ForecastsComponent,
     ExpensesComponent,
-    ExpenseTableComponent
+    ExpenseTableComponent,
+    // InventoriesComponent
    ],
   imports: [
     CommonModule,
     ComponentsRoutingModule,
+
     TableModule, 
     UtilitiesModule,
     ButtonModule,
@@ -85,6 +89,8 @@ import { ExpensesComponent } from './expenses/expenses.component';
     MatTabsModule,
     MatSnackBarModule,
     MatTableExporterModule,
+
+    ModalModule
   ],
   exports: [
     ItemsSummaryComponent,

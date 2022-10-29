@@ -6,6 +6,7 @@ import { debounceTime, Observable } from 'rxjs';
 import { MatSnackBar} from '@angular/material/snack-bar';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { order_type } from "src/app/shared/constants/enum";
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
 @UntilDestroy()
 @Component({
@@ -32,8 +33,11 @@ export class ReportsComponent implements OnInit {
   dine : string; 
   panda : string;
 
+  public ngForm: FormGroup;
+
   constructor(  private reportServ:  ReportsService,
                 private snackBar:    MatSnackBar,
+                private formBuilder: FormBuilder,
                 public  config:      NgbInputDatepickerConfig, 
                 public  calendar:    NgbCalendar ) {
 
@@ -48,6 +52,14 @@ export class ReportsComponent implements OnInit {
 
   }
 
+  ngOnInit(): void {
+    this.reportServ.initRange();
+    this.franchiseStores = this.reportServ.getStores();
+
+    this.ngForm = this.formBuilder.group({switchbol: new FormControl('')}); 
+
+    console.log(this.ngForm.value);
+  }
 
   openSnackBar(message: string) {
     this.snackBar.open(message,null,{duration: 5000});
@@ -62,10 +74,6 @@ export class ReportsComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.reportServ.initRange();
-    this.franchiseStores = this.reportServ.getStores();
-  }
 
   toggleSwitch(){
     this.switchbol = !this.switchbol;

@@ -6,6 +6,7 @@ import { ForecastsComponent } from "./forecasts/forecasts.component";
 import { ItemsSummaryComponent } from './items-summary/items-summary.component';
 import { OrdersSummaryComponent } from './orders-summary/orders-summary.component';
 import { ReportsComponent } from "./reports/reports.component";
+import { InventoriesComponent } from "./inventories/inventories.component";
 
 const routes: Routes = [
   {
@@ -51,6 +52,14 @@ const routes: Routes = [
         component: ForecastsComponent,
         data: {
           title: $localize`Forecasts`
+        },
+      },
+      {
+        path: 'inventories',
+        loadChildren: () => import('./inventories/inventories.module').then((m) => m.InventoriesModule),
+        component: InventoriesComponent,
+        data: {
+          title: $localize`Inventories`
         },
       },
     ]

@@ -166,7 +166,7 @@ $enable-rtl: true;
 
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: "TTNorms-Regular" !important; }
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
@@ -198,12 +198,22 @@ th.mat-header-cell:last-of-type{
   padding-right: 0px !important;
 }
 
+.body-background::before{
+    content: "";
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    // background-color: rgba(0,0,0,0.25);
+}
 
 .body-background{
   background-image: url('../assets/img/brand/wrapper.jpg');
   background-repeat:repeat-y;
   background-size: cover;
   background-position-y: center;
+  // position: absolute;
   min-height: 80vh !important;
   padding-bottom: 1em;
   padding-top: 1em;
@@ -224,4 +234,62 @@ th.mat-header-cell:last-of-type{
   --info:      #39f;
   --warning:   #f9b115;
   --danger:    #e55353;
+}
+
+.row{
+  padding: .25em;
+}
+
+.header-button{
+  float: right !important;
+}
+
+
+.nugget{
+  font-family: "TTNorms-Bold";
+  border: 1px solid whitesmoke;
+  text-align: center;
+  height: 10vh;
+  border-radius: 15px;
+  margin: 5px;
+  box-shadow: 3px 3px 5px #888888;
+
+    
+    p{
+      margin-top: 2em;
+    }
+
+    &:hover{
+      background-color: var(--secondary) !important;
+      color: whitesmoke;
+      cursor: pointer;
+    }
+
+    &.gray{
+      background-color: #d4d4d44d;
+    }
+
+    &.primary{
+      background-color: var(--primary);
+    }
+
+    &.secondary{
+      background-color: var(--secondary);
+    }
+
+    &.tertiary{
+      background-color: var(--tertiary);
+    }
+
+    &.fourth{
+      background-color: var(--fourth);
+    }
+
+    &.fifth{
+      background-color: var(--fifth);
+    }
+
+  
+
+
 }
