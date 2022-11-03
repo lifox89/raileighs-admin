@@ -4,6 +4,7 @@ export interface commissary{
     commissary_manager:string;
     contact_no:string;
     franchise_id:string,
-    commissary_stores?: []
+    inactive:boolean,
+    commissary_stores?: any[]
     commissary_id?:string;
 }

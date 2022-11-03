@@ -54,13 +54,36 @@
                     <span cInputGroupText>#</span>
                     <input aria-label="Contact No." cFormControl placeholder="Contact No." formControlName="contact_no" type="number"/>
                 </c-input-group>
+
+                <br>
+                <hr>
+                <h5 class="assign-stores">Assign Stores</h5>
+                <hr>
+
+                <c-row formArrayName="comm_stores">
+
+                    <c-col sm="12" lg="4" *ngFor="let store of ngForm.get('comm_stores')['controls']; let i = index" [formGroupName]="i">
+
+                        <c-input-group class="mb-3">
+                            <span cInputGroupText>
+                              <c-form-check>
+                                <input cFormCheckInput id="checkOne" type="checkbox" formControlName="status" />
+                              </c-form-check>
+                            </span>
+        
+                            <input aria-label="Store Name" cFormControl formControlName="store_name" readonly="true"/>
+                        </c-input-group>
+
+                    </c-col>
+                </c-row>
+
             
 
         </c-modal-body>
 
         <c-modal-footer>
             <button cButton color="fourth"     class="header-button" (click)="openModal()">Close</button>
-            <button cButton color="secondary" class="header-button" [disabled]="!ngForm.valid" type="submit" >Create</button>
+            <button cButton color="secondary"  class="header-button" [disabled]="!ngForm.valid" type="submit" >Create</button>
         </c-modal-footer>
 
     </form>
@@ -68,9 +91,10 @@
 
 
 <c-modal #modalView id="modalView" size="lg" [visible]="viewBol" (visibleChange)="viewChange($event)">
-    <form [formGroup]="viewForm">
+    <form [formGroup]="viewForm" (ngSubmit)="update(viewForm.value)">
         <c-modal-header>
             <h5 cModalTitle>Commissary Information</h5>
+            <button (click)="delComm(viewForm.value)" cButton color="danger" class="header-button">Delete</button>
         </c-modal-header>
 
         <c-modal-body>
@@ -91,12 +115,33 @@
                     <span cInputGroupText>#</span>
                     <input aria-label="Contact No." cFormControl placeholder="Contact No." formControlName="contact_no" type="number" [readonly]="true"/>
                 </c-input-group>
-            
+                
+                <br>
+                <hr>
+                <h5 class="assign-stores">Assign Stores</h5>
+                <hr>
+                
+                <c-row formArrayName="comm_stores">
+                    <c-col sm="12" lg="4" *ngFor="let store of viewForm.get('comm_stores')['controls']; let i = index" [formGroupName]="i">
+
+                        <c-input-group class="mb-3">
+                            <span cInputGroupText >
+                              <c-form-check  color="secondary" >
+                                <input cFormCheckInput id="checkOne" type="checkbox" formControlName="status" />
+                              </c-form-check>
+                            </span>
+        
+                            <input aria-label="Store Name" cFormControl formControlName="store_name" [readonly]="true"/>
+                        </c-input-group>
+
+                    </c-col>
+                </c-row>
 
         </c-modal-body>
 
         <c-modal-footer>
             <button cButton color="fourth"     class="header-button" (click)="openView(null)">Close</button>
+            <button cButton color="secondary" type="submit">Update</button>
         </c-modal-footer>
 
     </form>

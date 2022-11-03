@@ -26,7 +26,9 @@ export class CommissaryService {
   // FETCH SERVICES
   fetchCommissary(){
     
-    this.firestore.collection('servidor_commissary', ref => ref.where("franchise_id","==", this.user.userId))
+    this.firestore.collection('servidor_commissary', ref => ref
+                  .where("franchise_id","==", this.user.userId)
+                  .where("inactive","==",false))
                   .snapshotChanges()
                   .subscribe( subs => {
                     let comms = [];
@@ -49,14 +51,27 @@ export class CommissaryService {
   // ADD SERVICES
   async addNewCommissary( newCom: any): Promise<boolean>{
 
+    let storeArr  = [];
+
+    if (newCom.comm_stores) {
+      newCom.comm_stores.forEach( store => {
+        if (store.status) {
+          storeArr.push(store.store_id);
+        }
+      }); 
+    }
+
     let data: commissary = {
       commissary_name:    newCom.comm_name,
       commissary_address: newCom.comm_address,
       commissary_manager: newCom.manager_name,
+      commissary_stores:  storeArr,
       contact_no:         newCom.contact_no,
-      franchise_id:       this.user.userId
+      franchise_id:       this.user.userId,
+      inactive: false,
     };
 
+    console.log(data);
     return new Promise((resolve, reject)=> {
 
       this.firestore.collection('servidor_commissary').doc(data.commissary_name)
@@ -70,5 +85,46 @@ export class CommissaryService {
     });
 
   };
+
+  async updateCommissary( newCom: any): Promise<boolean>{
+
+    let storeArr  = [];
+
+    if (newCom.comm_stores) {
+      newCom.comm_stores.forEach( store => {
+        if (store.status) {
+          storeArr.push(store.store_id);
+        }
+      }); 
+    }
+
+    return new Promise((resolve, reject)=> {
+
+      this.firestore.collection('servidor_commissary').doc(newCom.comm_id)
+                    .update({commissary_stores: storeArr})
+                    .then(()=>{
+                      resolve(true);
+                    })
+                    .catch(()=>{
+                      reject(false);
+                    });
+    });
+
+  };
+
+  // DELETE SERVICES
+  async removeCommissary( comm:any){
+    return new Promise((resolve, reject)=> {
+
+      this.firestore.collection('servidor_commissary').doc(comm.comm_id)
+                    .update({ inactive : true})
+                    .then(()=>{
+                      resolve(true);
+                    })
+                    .catch(()=>{
+                      reject(false);
+                    });
+    });
+  }
 
 }

@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { debounceTime, Observable } from 'rxjs';
 import { commissary } from 'src/app/shared/model/commissary';
 import { CommissaryService } from "src/app/shared/services/commissary.service";
+import { ReportsService } from 'src/app/shared/services/reports.service';
 
+@UntilDestroy()
 @Component({
   selector: 'app-inventories',
   templateUrl: './inventories.component.html',
@@ -17,16 +20,20 @@ export class InventoriesComponent implements OnInit {
   public viewBol:boolean = false;
 
   public commList : Observable<commissary[]>;
+  public storeList: Observable<any[]>;
 
   constructor( private formBuilder: FormBuilder,
+               private reportServ: ReportsService,
                private commServ: CommissaryService) { 
     
     this.commServ.fetchCommissary();
     this.commList = this.commServ.getComissary();
+    this.storeList = this.reportServ.getStores();
+  
   }
 
   ngOnInit(): void {
-
+    
     this.ngForm = this.formBuilder.group({
       comm_name: new FormControl('', Validators.compose([
         Validators.required,
@@ -40,32 +47,95 @@ export class InventoriesComponent implements OnInit {
       contact_no: new FormControl('', Validators.compose([
         Validators.required
       ])),
+      comm_stores: this.formBuilder.array([])
     });
 
     this.viewForm = this.formBuilder.group({
+      comm_id: new FormControl(''),
       comm_name: new FormControl(''),
       comm_address: new FormControl(''),
       manager_name: new FormControl(''),
       contact_no: new FormControl(''),
+      comm_stores: this.formBuilder.array([])
     });
+  }
+
+  private addStoresForm(){
+
+    this.ngForm.reset();
+
+    const ngForm = this.ngForm.get('comm_stores') as FormArray;
+
+    while (ngForm.length) {
+      ngForm.removeAt(0);
+    }
+
+    ngForm.reset();
+    
+    this.storeList.pipe(untilDestroyed(this))
+        .subscribe(sub=>{if(sub){
+          
+          sub.forEach( store => {
+
+            ngForm.push(new FormGroup({
+              status :    new FormControl(false),
+              store_id:   new FormControl(store.store_id),
+              store_name: new FormControl(store.store_name),
+            }));
+          });
+        }});
   }
 
   openModal(){
     this.visible = !this.visible;
+    this.addStoresForm();
   }
 
   openView(comm:commissary){
-    
-    this.viewBol = !this.viewBol;
+
+    let vwForm = this.viewForm.get('comm_stores') as FormArray;
+        
+    while (vwForm.length) {
+      vwForm.removeAt(0);
+    }
+
+    vwForm.reset();
 
     if (comm) {
+
       this.viewForm.patchValue({ 
-          comm_name : comm.commissary_name,
-          comm_address: comm.commissary_address,
-          manager_name: comm.commissary_manager,
-          contact_no: comm.contact_no
+        comm_id : comm.commissary_id,
+        comm_name : comm.commissary_name,
+        comm_address: comm.commissary_address,
+        manager_name: comm.commissary_manager,
+        contact_no: comm.contact_no,
       });
+
+      
+
+      
+      this.storeList.pipe(untilDestroyed(this))
+          .subscribe(sub=>{if(sub){
+            
+            // Loop through each store
+            sub.forEach( store => { 
+
+              // Check if store id exisit in comm store array
+              if (!comm.commissary_stores) {
+                comm.commissary_stores = [];
+              }
+              const found = comm.commissary_stores.find( storeId => { return (storeId === store.store_id) }); 
+
+              vwForm.push(new FormGroup({
+                status :    new FormControl(found? true : false),
+                store_id:   new FormControl(store.store_id),
+                store_name: new FormControl(store.store_name),
+              }));
+            });
+          }});
     }
+
+    this.viewBol = !this.viewBol;
   }
 
   handleLiveDemoChange(event: any) {
@@ -77,6 +147,7 @@ export class InventoriesComponent implements OnInit {
   }
 
   addNew(value:any){
+
     this.commServ.addNewCommissary(value)
                  .then(()=>{
                   console.log('Created!');
@@ -86,6 +157,31 @@ export class InventoriesComponent implements OnInit {
                  });
 
     this.visible = false;
+  }
+
+  update(value:any){
+    this.commServ.updateCommissary(value)
+                 .then(()=>{
+                   console.log('Updated!');
+                 })
+                 .catch(()=>{
+                   console.log('Error!');
+                 });
+
+    this.viewBol = !this.viewBol;
+  }
+
+  delComm(value : any){
+
+    this.commServ.removeCommissary(value)
+                 .then(()=>{
+                   console.log('Updated!');
+                 })
+                 .catch(()=>{
+                   console.log('Error!');
+                 });
+
+    this.viewBol = !this.viewBol;
   }
 
 
