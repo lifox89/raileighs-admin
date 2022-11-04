@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { commissary } from "src/app/shared/model/commissary";
+import { arrayUnion } from '@angular/fire/firestore'
+
+import { commissary, item } from "src/app/shared/model/commissary";
 import { user } from "src/app/shared/model/user";
 import * as moment from 'moment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+
+@UntilDestroy()
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +20,7 @@ export class CommissaryService {
 
   constructor( private firestore: AngularFirestore) { 
     this.user = JSON.parse(localStorage.getItem('user'));
+    
   }
 
   // GET SERVICES
@@ -47,8 +52,103 @@ export class CommissaryService {
 
   }
 
+  fetchItemData(itemId:string, commId:string){
+
+    let itemData = new BehaviorSubject<any>(undefined);
+
+    this.firestore.collection('servidor_commissary').doc(commId)
+                  .collection('items_inventory').doc(itemId)
+                  .snapshotChanges()
+                  .subscribe(sub=> {
+
+                    // itemData.next([]);
+
+                    if (sub) {
+
+                      const item = {
+                        item_data : sub.payload.data(),
+                        item_log : []
+                      };
+
+                      this.firestore.collection('servidor_commissary').doc(commId)
+                                    .collection('items_inventory').doc(itemId)
+                                    .collection('item_history', ref => ref
+                                    .orderBy("transaction_time","desc")
+                                    .limitToLast(10))
+                                    .snapshotChanges()
+                                    .subscribe(log => {
+                                      if (log) {
+                                        let array = [];
+
+                                        log.forEach( elem => {
+                                          array.push(elem.payload.doc.data());
+                                        });
+
+                                        item.item_log = array;
+                                        itemData.next(item);
+                                      }
+                                    });
+
+                      
+                    }
+                  });
+
+    return itemData.asObservable();
+  }
 
   // ADD SERVICES
+  async addNewItemCommissary( item: any, commId: string){
+
+    const data : item= {
+      item_name: item.item_name,
+      item_added: new Date().getTime(),
+      item_qty: item.item_qty,
+      item_unit: item.item_unit,
+    }
+
+    return new Promise((resolve,reject)=>{
+      this.firestore.collection('servidor_commissary').doc(commId)
+                    .collection('items_inventory').add(data)
+                    .then((res)=>{
+
+                      const itemList = {
+                        item_id : res.id,
+                        item_name : item.item_name,
+                      };
+
+                      this.firestore.collection('servidor_commissary').doc(commId)
+                                    .update({ items_list : arrayUnion(itemList) })
+                                    .then(()=>{
+                                      
+                                      const history = {
+                                        destination : commId,
+                                        item_qty : item.item_qty,
+                                        item_unit : item.item_unit,
+                                        transaction_time: new Date().getTime(),
+                                        transaction_type: 'credit',
+                                      };
+
+                                      this.firestore.collection('servidor_commissary').doc(commId)
+                                                    .collection('items_inventory').doc(res.id)
+                                                    .collection('item_history').add(history)
+                                                    .then(()=>{
+                                                      resolve(true);
+                                                    })
+                                                    .catch(()=>{
+                                                      reject(false);
+                                                    })
+
+                                    })
+                                    .catch(()=>{
+                                      reject(false);
+                                    });
+                    })
+                    .catch(()=>{
+                      reject(false);
+                    });
+    });
+  }
+
   async addNewCommissary( newCom: any): Promise<boolean>{
 
     let storeArr  = [];
@@ -69,6 +169,7 @@ export class CommissaryService {
       contact_no:         newCom.contact_no,
       franchise_id:       this.user.userId,
       inactive: false,
+      items_list: []
     };
 
     console.log(data);

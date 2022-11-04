@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InventoriesComponent } from "./inventories.component";
 import { GridModule, CardModule, ModalModule, FormModule , ButtonModule } from '@coreui/angular';
-
+import { CdkAccordionModule} from '@angular/cdk/accordion';
 
 @NgModule({
   declarations: [ InventoriesComponent ],
@@ -15,7 +15,8 @@ import { GridModule, CardModule, ModalModule, FormModule , ButtonModule } from '
     CardModule,
     ModalModule,
     FormModule,
-    ButtonModule
+    ButtonModule,
+    CdkAccordionModule
   ]
 })
 

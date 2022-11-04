@@ -1,0 +1,91 @@
+.group-container{
+    max-height: 30em;
+    height: 28em;
+    overflow-y: auto;
+    // border: 1px solid darkgray;
+    border-radius: 8px;
+    padding-top: 1em;
+}
+
+.log-credit{
+    text-align: right;
+    font-weight: bold;
+    color: green !important;
+}
+
+.log-debit{
+    text-align: right;
+    font-weight: bold;
+    color: red !important;
+}
+
+.tool-button{
+    position: absolute;
+    bottom: .5em;
+    right: .5em;
+}
+
+.tool-button-delete{
+    position: absolute;
+    bottom: .5em;
+    right: 4em;
+}
+
+.inventory-header{
+    margin-top: 8px;
+}
+
+.item-search-bar{
+    padding-top: 1px;
+}
+
+.cart-badge{
+    position: absolute;
+    top: 35px;
+    right: 55px;
+}
+
+.item-info{
+    // border: 1px solid darkgray;
+    height: 100%;
+    border-radius: 8px;
+    // padding: .25em 1em 0 1em;
+}
+
+.item-info-sub{
+    // border: 1px solid darkgray;
+    height: calc(64vh / 2);
+    border-radius: 8px;
+
+    c-card-body{
+        height: 12.5em;
+        overflow: auto;
+    }
+}
+
+.sub-header-button{
+    float: right !important;
+    position: absolute;
+    right: 5px;
+    top: 3px;
+}
+
+
+@media only screen and (max-width: 425px) {
+    .group-container{
+        height: 10em;
+        max-height: 10em;
+        margin-top: 1em;
+    }
+
+    .item-info{
+        height: 30em !important;
+        margin-top: 1em;
+        max-height: 30em;
+        overflow-y: auto;
+    }
+}
+
+.row{
+    padding: 0 !important;
+}

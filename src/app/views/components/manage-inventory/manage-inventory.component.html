@@ -1,0 +1,162 @@
+<c-card>
+    <c-card-header>
+        <c-row>
+            <c-col xs="5" sm="3" lg="3" class="inventory-header"><h5><b>{{_commId | uppercase}}</b></h5></c-col>
+            <c-col xs="7" sm="9" lg="9">
+                <button cButton color="secondary" class="header-button" (click)="back()">
+                    <svg cIcon name="cil-cart" size="xl" title="Barcode"></svg>
+                    <c-badge color="danger" class="cart-badge" shape="rounded-pill">0</c-badge>
+                </button>
+            </c-col>
+        </c-row>
+    </c-card-header>
+
+    <c-card-body>
+        <c-row>
+            <c-col sm="12" lg="4">
+                <c-input-group class="item-search-bar">
+                    <span cInputGroupText id="basic-addon1"><svg cIcon name="cil-magnifying-glass" size="xl" title="Search"></svg></span>
+                    <input aria-describedby="basic-addon1"
+                            aria-label="Item"
+                            cFormControl
+                            placeholder="Item"/>
+
+                    <!-- <button cButton color="primary" cTooltip="Scan Barcode" cTooltipPlacement="top">
+                        <svg cIcon name="cil-barcode" size="xl" title="Barcode"></svg>
+                    </button> -->
+                    
+                    <button cButton color="secondary" cTooltip="Create Item" cTooltipPlacement="top" (click)="toggleCreate()">
+                        <svg cIcon name="cil-file" size="xl" title="Create"></svg>
+                    </button>
+                </c-input-group>
+
+                <div class="group-container">
+                    <ul cListGroup class="list-group">
+                        <li cListGroupItem class="list-group-item" *ngFor="let item of _itemList" (click)="openItem(item)">{{ item.item_name | titlecase }}</li>
+                    </ul>
+                </div>
+            </c-col>
+
+            <c-col sm="12" lg="8">
+                <div class="item-info">
+                    <c-row>
+
+                        <!-- ITEM INFO -->
+                        <c-col sm="12" lg="6" class="item-info-sub">
+                            <c-card>
+                                <c-card-header>
+                                    <h6>Item Information</h6>
+                                </c-card-header>
+                                <c-card-body>
+                                    <form [formGroup]="ngForm"  (ngSubmit)="addNew(ngForm.value)">
+                                        <div [cFormFloating]="true" class="mb-3">
+                                            <input cFormControl id="itemName" placeholder="" type="text" 
+                                                   [readonly]="!_createView" 
+                                                   formControlName="item_name"/>
+                                            <label cLabel for="commAddress">Item name</label>
+                                        </div>
+
+                                        <c-input-group class="mb-3">
+                                            <span cInputGroupText>Qty</span>
+                                            <input aria-label="Quantity" cFormControl placeholder="0" type="number" 
+                                                   [readonly]="!_createView"
+                                                   formControlName="item_qty"/>
+
+                                            <span cInputGroupText *ngIf="_createView">Unit</span>
+                                            <span cInputGroupText *ngIf="!_createView">{{ngForm.controls['item_unit'].value}}</span>
+
+                                            <select aria-label="Measure" cSelect *ngIf="_createView" formControlName="item_unit">
+                                                <option>...</option>
+                                                <option *ngFor="let unit of _units" value="{{unit}}">{{unit}}</option>
+                                            </select>
+                                        </c-input-group>
+
+                                        <button cButton color="secondary" class="tool-button" 
+                                                cTooltip="Save item" cTooltipPlacement="top" 
+                                                type="submit" [disabled]="!ngForm.valid" *ngIf="_createView">
+                                            <svg cIcon name="cil-save" size="lg" title="Save"></svg>
+                                        </button>
+                                        
+                                        <button cButton color="danger" 
+                                                class="tool-button" 
+                                                cTooltip="Delete Item" 
+                                                cTooltipPlacement="top"         
+                                                *ngIf="!_createView">
+                                            <svg cIcon name="cil-delete" size="lg" title="Delete"></svg>
+                                        </button>
+                                    </form>
+                                </c-card-body>
+                            </c-card>
+                        </c-col>
+
+                        <c-col sm="12" lg="6" class="item-info-sub">
+                            <c-card *ngIf="!_createView">
+                                <c-card-header>
+                                    <h6>Add Yield</h6>
+                                </c-card-header>
+                                
+                                <c-card-body>
+                                    <c-input-group class="mb-3">
+                                        <span cInputGroupText>Qty</span>
+                                        <input aria-label="Quantity" cFormControl placeholder="0" type="number"/>
+                                        <span cInputGroupText>{{ngForm.controls['item_unit'].value}}</span>
+                                    </c-input-group>
+                                    <button cButton color="secondary" class="tool-button">
+                                        Add Yield
+                                    </button>
+                                </c-card-body>
+                            </c-card>
+                        </c-col>
+
+                        <c-col sm="12" lg="6" class="item-info-sub">
+                            <c-card *ngIf="!_createView">
+                                <c-card-header>
+                                    <h6>Item Log</h6>
+                                </c-card-header>
+
+                                <c-card-body>
+                                    <table [striped]="true" cTable>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" colSpan="2">Date Time</th>
+                                                <th scope="col">Destination</th>
+                                                <th scope="col">Qty</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            <tr *ngFor="let log of _itemLog">
+                                                <td colSpan="2">{{ log.transaction_time | date: 'MM/dd HH:mm'}}</td>
+                                                <td>{{ log.destination | uppercase }}</td>
+                                                <td [ngClass]="getClass(log.transaction_type)">{{ (log.item_qty | number:'1.0' ) + ' ' + log.item_unit }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </c-card-body>
+                            </c-card>
+                        </c-col>
+
+                        <c-col sm="12" lg="6" class="item-info-sub">
+                            <c-card *ngIf="!_createView">
+                                <c-card-header>
+                                    <h6>Add to Cart</h6>
+                                </c-card-header>
+                                <c-card-body>
+                                    <c-input-group class="mb-3">
+                                        <span cInputGroupText>Qty</span>
+                                        <input aria-label="Quantity" cFormControl placeholder="0" type="number"/>
+                                        <span cInputGroupText>{{ngForm.controls['item_unit'].value}}</span>
+                                    </c-input-group>
+                                    <button cButton color="secondary" class="tool-button">
+                                        Add Cart
+                                    </button>
+                                </c-card-body>
+                            </c-card>
+                        </c-col>
+                    </c-row>
+                </div>
+            </c-col>
+        </c-row>
+    </c-card-body>
+
+</c-card>

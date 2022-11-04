@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, Observable } from 'rxjs';
 import { commissary } from 'src/app/shared/model/commissary';
@@ -23,6 +24,7 @@ export class InventoriesComponent implements OnInit {
   public storeList: Observable<any[]>;
 
   constructor( private formBuilder: FormBuilder,
+               private router: Router,
                private reportServ: ReportsService,
                private commServ: CommissaryService) { 
     
@@ -91,6 +93,12 @@ export class InventoriesComponent implements OnInit {
     this.addStoresForm();
   }
 
+  manageInventory(commId:string){
+    this.viewBol = !this.viewBol;
+    this.router.navigateByUrl('/home/components/manage-inventory',{ state: {id : commId} });
+  }
+
+
   openView(comm:commissary){
 
     let vwForm = this.viewForm.get('comm_stores') as FormArray;
@@ -111,9 +119,6 @@ export class InventoriesComponent implements OnInit {
         contact_no: comm.contact_no,
       });
 
-      
-
-      
       this.storeList.pipe(untilDestroyed(this))
           .subscribe(sub=>{if(sub){
             

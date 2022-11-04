@@ -13,3 +13,10 @@ export enum order_type {
     ONLINE  = 'online',
     PANDA   = 'panda'
 }
+
+
+export const units:string[] = [
+    'g',
+    'pcs',
+    'ml',
+]

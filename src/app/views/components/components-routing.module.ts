@@ -7,6 +7,7 @@ import { ItemsSummaryComponent } from './items-summary/items-summary.component';
 import { OrdersSummaryComponent } from './orders-summary/orders-summary.component';
 import { ReportsComponent } from "./reports/reports.component";
 import { InventoriesComponent } from "./inventories/inventories.component";
+import { ManageInventoryComponent } from "./manage-inventory/manage-inventory.component";
 
 const routes: Routes = [
   {
@@ -52,6 +53,14 @@ const routes: Routes = [
         component: ForecastsComponent,
         data: {
           title: $localize`Forecasts`
+        },
+      },
+      {
+        path: 'manage-inventory',
+        loadChildren: () => import('./manage-inventory/manage-inventory.module').then((m) => m.ManageInventoryModule),
+        component: ManageInventoryComponent,
+        data: {
+          title: $localize`Manage Inventories`
         },
       },
       {

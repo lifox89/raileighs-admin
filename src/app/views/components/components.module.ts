@@ -13,6 +13,7 @@ import {
   UtilitiesModule,
   TableModule,
   FormModule,  
+  TooltipModule,
 } from '@coreui/angular';
 
 import { IconModule } from '@coreui/icons-angular';
@@ -37,7 +38,7 @@ import { MatTableModule } from "@angular/material/table";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatSnackBarModule } from "@angular/material/snack-bar";
 import { MatTableExporterModule } from 'mat-table-exporter';
-import { ModalModule } from '@coreui/angular';
+import { ModalModule, BadgeModule } from '@coreui/angular';
 
 
 import { TablePaginateComponent } from './table-paginate/table-paginate.component';
@@ -46,6 +47,7 @@ import { ChartsComponent } from './charts/charts.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
 import { ExpensesComponent } from './expenses/expenses.component';
 import { InventoriesComponent } from './inventories/inventories.component';
+import { ManageInventoryComponent } from './manage-inventory/manage-inventory.component';
 
 
 @NgModule({
@@ -58,7 +60,6 @@ import { InventoriesComponent } from './inventories/inventories.component';
     ForecastsComponent,
     ExpensesComponent,
     ExpenseTableComponent,
-    // InventoriesComponent
    ],
   imports: [
     CommonModule,
@@ -89,8 +90,10 @@ import { InventoriesComponent } from './inventories/inventories.component';
     MatTabsModule,
     MatSnackBarModule,
     MatTableExporterModule,
+    TooltipModule,
 
-    ModalModule
+    ModalModule,
+    BadgeModule
   ],
   exports: [
     ItemsSummaryComponent,

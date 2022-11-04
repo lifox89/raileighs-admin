@@ -56,7 +56,6 @@
                 </c-input-group>
 
                 <br>
-                <hr>
                 <h5 class="assign-stores">Assign Stores</h5>
                 <hr>
 
@@ -116,31 +115,57 @@
                     <input aria-label="Contact No." cFormControl placeholder="Contact No." formControlName="contact_no" type="number" [readonly]="true"/>
                 </c-input-group>
                 
-                <br>
-                <hr>
-                <h5 class="assign-stores">Assign Stores</h5>
-                <hr>
                 
-                <c-row formArrayName="comm_stores">
-                    <c-col sm="12" lg="4" *ngFor="let store of viewForm.get('comm_stores')['controls']; let i = index" [formGroupName]="i">
+                <cdk-accordion class="accordion">
+                    <cdk-accordion-item
+                      *ngFor="let item of ['Assigned Stores']; let index = index;"
+                      #accordionItem="cdkAccordionItem"
+                      class="accordion-item"
+                      role="button"
+                      tabindex="0"
+                      [attr.id]="'accordion-header-' + index"
+                      [attr.aria-expanded]="accordionItem.expanded"
+                      [attr.aria-controls]="'accordion-body-' + index">
 
-                        <c-input-group class="mb-3">
-                            <span cInputGroupText >
-                              <c-form-check  color="secondary" >
-                                <input cFormCheckInput id="checkOne" type="checkbox" formControlName="status" />
-                              </c-form-check>
-                            </span>
-        
-                            <input aria-label="Store Name" cFormControl formControlName="store_name" [readonly]="true"/>
-                        </c-input-group>
+                      <div class="accordion-item-header" (click)="accordionItem.toggle()">
+                        {{ item }}
+                        <span class="accordion-item-description">
+                          Click to {{ accordionItem.expanded ? 'close' : 'open' }}
+                        </span>
+                      </div>
 
-                    </c-col>
-                </c-row>
+                      <div
+                        class="accordion-item-body"
+                        role="region"
+                        [style.display]="accordionItem.expanded ? '' : 'none'"
+                        [attr.id]="'accordion-body-' + index"
+                        [attr.aria-labelledby]="'accordion-header-' + index">
+
+                        <c-row formArrayName="comm_stores">
+                            <c-col sm="12" lg="4" *ngFor="let store of viewForm.get('comm_stores')['controls']; let i = index" [formGroupName]="i">
+
+                                <c-input-group class="mb-3">
+                                    <span cInputGroupText >
+                                    <c-form-check  color="secondary" >
+                                        <input cFormCheckInput id="checkOne" type="checkbox" formControlName="status" />
+                                    </c-form-check>
+                                    </span>
+                
+                                    <input aria-label="Store Name" cFormControl formControlName="store_name" [readonly]="true"/>
+                                </c-input-group>
+
+                            </c-col>
+                        </c-row>
+
+                      </div>
+                    </cdk-accordion-item>
+                  </cdk-accordion>
 
         </c-modal-body>
 
         <c-modal-footer>
-            <button cButton color="fourth"     class="header-button" (click)="openView(null)">Close</button>
+            <button cButton color="primary" (click)="manageInventory(viewForm.value.comm_id)">Manage Inventory</button>
+            <button cButton color="fourth"    class="header-button" (click)="openView(null)">Close</button>
             <button cButton color="secondary" type="submit">Update</button>
         </c-modal-footer>
 
