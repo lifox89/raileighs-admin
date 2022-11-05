@@ -19,4 +19,5 @@ export const units:string[] = [
     'g',
     'pcs',
     'ml',
+    'pack'
 ]

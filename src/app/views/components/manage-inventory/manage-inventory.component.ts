@@ -20,6 +20,8 @@ export class ManageInventoryComponent implements OnInit {
 
   _itemList: any[];
   _itemLog : any[];
+  _addQty:number;
+  _currItemId:string;
 
   ngForm : FormGroup;
 
@@ -64,6 +66,21 @@ export class ManageInventoryComponent implements OnInit {
 
   toggleCreate(){
     this._createView = true;
+    this.ngForm.reset();
+  }
+
+  addYield(){
+
+    let formData = this.ngForm.value;
+
+    const data = {
+      item_qty : this._addQty,
+      item_id:   this._currItemId,
+      item_unit: formData.item_unit
+    }
+
+    this.commServ.addYield(data,this._commId);
+    this._addQty = 0;
   }
 
   addNew(value:any){
@@ -79,6 +96,7 @@ export class ManageInventoryComponent implements OnInit {
 
   openItem(item:any){
 
+    this._currItemId = item.item_id;
     this._createView = false;
     this.commServ.fetchItemData(item.item_id, this._commId).pipe(untilDestroyed(this))
                  .subscribe( data => {
@@ -86,8 +104,6 @@ export class ManageInventoryComponent implements OnInit {
                     this.ngForm.controls['item_name'].patchValue(data.item_data.item_name);
                     this.ngForm.controls['item_qty'].patchValue(data.item_data.item_qty);
                     this.ngForm.controls['item_unit'].patchValue(data.item_data.item_unit);
-
-                    console.log(data);
                     this._itemLog = data.item_log;
                   }
                  });

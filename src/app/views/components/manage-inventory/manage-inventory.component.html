@@ -42,7 +42,7 @@
                     <c-row>
 
                         <!-- ITEM INFO -->
-                        <c-col sm="12" lg="6" class="item-info-sub">
+                        <c-col sm="12" lg="8" class="item-info-sub">
                             <c-card>
                                 <c-card-header>
                                     <h6>Item Information</h6>
@@ -89,7 +89,7 @@
                             </c-card>
                         </c-col>
 
-                        <c-col sm="12" lg="6" class="item-info-sub">
+                        <c-col sm="12" lg="4" class="item-info-sub">
                             <c-card *ngIf="!_createView">
                                 <c-card-header>
                                     <h6>Add Yield</h6>
@@ -98,17 +98,17 @@
                                 <c-card-body>
                                     <c-input-group class="mb-3">
                                         <span cInputGroupText>Qty</span>
-                                        <input aria-label="Quantity" cFormControl placeholder="0" type="number"/>
+                                        <input aria-label="Quantity" cFormControl placeholder="0" type="number" [(ngModel)]="_addQty"/>
                                         <span cInputGroupText>{{ngForm.controls['item_unit'].value}}</span>
                                     </c-input-group>
-                                    <button cButton color="secondary" class="tool-button">
+                                    <button cButton color="secondary" class="tool-button" [disabled]="!_addQty" (click)="addYield()">
                                         Add Yield
                                     </button>
                                 </c-card-body>
                             </c-card>
                         </c-col>
 
-                        <c-col sm="12" lg="6" class="item-info-sub">
+                        <c-col sm="12" lg="8" class="item-info-sub">
                             <c-card *ngIf="!_createView">
                                 <c-card-header>
                                     <h6>Item Log</h6>
@@ -136,7 +136,7 @@
                             </c-card>
                         </c-col>
 
-                        <c-col sm="12" lg="6" class="item-info-sub">
+                        <c-col sm="12" lg="4" class="item-info-sub">
                             <c-card *ngIf="!_createView">
                                 <c-card-header>
                                     <h6>Add to Cart</h6>

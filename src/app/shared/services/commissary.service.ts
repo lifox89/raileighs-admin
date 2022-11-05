@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { arrayUnion } from '@angular/fire/firestore'
+import { arrayUnion, increment } from '@angular/fire/firestore'
 
 import { commissary, item } from "src/app/shared/model/commissary";
 import { user } from "src/app/shared/model/user";
@@ -97,6 +97,40 @@ export class CommissaryService {
   }
 
   // ADD SERVICES
+
+  async addYield(dat:any, commId:string){
+    return new Promise((resolve,reject)=> {
+      this.firestore.collection('servidor_commissary').doc(commId)
+                    .collection('items_inventory').doc(dat.item_id)
+                    .update({item_qty: increment(dat.item_qty)})
+                    .then(()=>{
+                      
+                      const history = {
+                        destination : commId,
+                        item_qty : dat.item_qty,
+                        item_unit : dat.item_unit,
+                        transaction_time: new Date().getTime(),
+                        transaction_type: 'credit',
+                      };
+
+                      this.firestore.collection('servidor_commissary').doc(commId)
+                                    .collection('items_inventory').doc(dat.item_id)
+                                    .collection('item_history').add(history)
+                                    .then(()=>{
+                                      resolve(true);
+                                    })
+                                    .catch(()=>{
+                                      reject(false);
+                                    });
+                    })
+                    .catch(()=>{
+                      reject(false);
+                    })
+    });
+  }
+
+
+
   async addNewItemCommissary( item: any, commId: string){
 
     const data : item= {
