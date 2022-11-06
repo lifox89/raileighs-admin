@@ -7,7 +7,7 @@ import { UntypedFormBuilder } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { ToasterComponent, ToasterPlacement } from '@coreui/angular';
 import { UtilToastComponent } from "src/app/views/utilities/util-toast/util-toast.component";
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { ReportsService } from 'src/app/shared/services/reports.service';
 
 @UntilDestroy()
@@ -62,13 +62,14 @@ export class ManageInventoryComponent implements OnInit {
       this.commServ.getComissary().pipe(untilDestroyed(this))
                    .subscribe(sub=> {
                     
-                    if (sub) {
-                      const dat = sub.find( comm => { return (comm.commissary_id === this._commId)});
+                      if (sub) {
+                        const dat = sub.find( comm => { return (comm.commissary_id === this._commId)});
 
-                      if (dat && dat.items_list) {
-                        this._itemList = dat.items_list;
+                        if (dat && dat.items_list) {
+                          this._itemList = dat.items_list;
+                          this._stores = this.reportServ.getStores().pipe(map( data => data.filter( store => dat.commissary_stores.includes(store.store_id) )));
+                        }
                       }
-                    }
 
                    });
     }
@@ -88,7 +89,7 @@ export class ManageInventoryComponent implements OnInit {
 
     this.commServ.resetCart();
     this._cartItems = this.commServ.getRequestData();
-    this._stores = this.reportServ.getStores();
+    
 
     this._cartItems.pipe(untilDestroyed(this))
         .subscribe(sub=>{
