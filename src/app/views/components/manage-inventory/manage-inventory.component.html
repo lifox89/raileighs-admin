@@ -3,9 +3,9 @@
         <c-row>
             <c-col xs="5" sm="3" lg="3" class="inventory-header"><h5><b>{{_commId | uppercase}}</b></h5></c-col>
             <c-col xs="7" sm="9" lg="9">
-                <button cButton color="secondary" class="header-button" (click)="back()">
+                <button cButton color="secondary" class="header-button" [cModalToggle]="verticallyCenteredModal.id">
                     <svg cIcon name="cil-cart" size="xl" title="Barcode"></svg>
-                    <c-badge color="danger" class="cart-badge" shape="rounded-pill">0</c-badge>
+                    <c-badge color="danger" class="cart-badge" shape="rounded-pill">{{ (_cartItems | async).length }}</c-badge>
                 </button>
             </c-col>
         </c-row>
@@ -19,7 +19,8 @@
                     <input aria-describedby="basic-addon1"
                             aria-label="Item"
                             cFormControl
-                            placeholder="Item"/>
+                            [(ngModel)]="_searchText"
+                            placeholder="Search item name"/>
 
                     <!-- <button cButton color="primary" cTooltip="Scan Barcode" cTooltipPlacement="top">
                         <svg cIcon name="cil-barcode" size="xl" title="Barcode"></svg>
@@ -32,7 +33,7 @@
 
                 <div class="group-container">
                     <ul cListGroup class="list-group">
-                        <li cListGroupItem class="list-group-item" *ngFor="let item of _itemList" (click)="openItem(item)">{{ item.item_name | titlecase }}</li>
+                        <li cListGroupItem class="list-group-item" *ngFor="let item of (_itemList | filter:_searchText) " (click)="openItem(item)">{{ item.item_name | titlecase }}</li>
                     </ul>
                 </div>
             </c-col>
@@ -108,7 +109,7 @@
                             </c-card>
                         </c-col>
 
-                        <c-col sm="12" lg="8" class="item-info-sub">
+                        <c-col sm="12" lg="6" class="item-info-sub">
                             <c-card *ngIf="!_createView">
                                 <c-card-header>
                                     <h6>Item Log</h6>
@@ -118,9 +119,9 @@
                                     <table [striped]="true" cTable>
                                         <thead>
                                             <tr>
-                                                <th scope="col" colSpan="2">Date Time</th>
+                                                <th scope="col" colSpan="2">Prod Date</th>
                                                 <th scope="col">Destination</th>
-                                                <th scope="col">Qty</th>
+                                                <th scope="col" class="header-qty">Qty</th>
                                             </tr>
                                         </thead>
 
@@ -136,20 +137,48 @@
                             </c-card>
                         </c-col>
 
-                        <c-col sm="12" lg="4" class="item-info-sub">
+                        <c-col sm="12" lg="6" class="item-info-sub">
                             <c-card *ngIf="!_createView">
                                 <c-card-header>
                                     <h6>Add to Cart</h6>
                                 </c-card-header>
-                                <c-card-body>
+                                <c-card-body class="body-log">
                                     <c-input-group class="mb-3">
                                         <span cInputGroupText>Qty</span>
-                                        <input aria-label="Quantity" cFormControl placeholder="0" type="number"/>
+                                        <input aria-label="Quantity" cFormControl placeholder="0" type="number" [(ngModel)]="_addCart"/>
                                         <span cInputGroupText>{{ngForm.controls['item_unit'].value}}</span>
+                                        <button cButton color="secondary" [disabled]=" !_addCart || !_logId " (click)="addCart()">
+                                            Add
+                                        </button>
                                     </c-input-group>
-                                    <button cButton color="secondary" class="tool-button">
-                                        Add Cart
-                                    </button>
+                                    
+                                    <div class="table-select">
+                                        <table [striped]="true" cTable>
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Select</th>
+                                                    <th scope="col" colSpan="2">Date Time</th>
+                                                    <th scope="col" class="header-qty">Available Qty</th>
+                                                </tr>
+                                            </thead>
+    
+                                            <tbody>
+                                                <tr *ngFor="let log of (_itemLog | sort:'asc':'transaction_time')">
+                                                    <td *ngIf="(log.item_qty - log.item_del_qty) && log.transaction_type == 'credit' ">
+                                                        <input [(ngModel)]="_logId" cFormCheckInput type="radio" value="{{log.log_id}}" name="radiolog" (click)="setItem(log)"/>
+                                                    </td>
+
+                                                    <td colSpan="2" *ngIf="(log.item_qty - log.item_del_qty) && log.transaction_type == 'credit' ">
+                                                        {{ log.transaction_time | date: 'MM/dd/yy'}}
+                                                    </td>
+
+                                                    <td [ngClass]="getClass(log.transaction_type)" *ngIf="(log.item_qty - log.item_del_qty) && log.transaction_type == 'credit' ">
+                                                        {{ (log.item_qty - log.item_del_qty | number:'1.0' ) + ' ' + log.item_unit }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </c-card-body>
                             </c-card>
                         </c-col>
@@ -160,3 +189,64 @@
     </c-card-body>
 
 </c-card>
+
+
+<c-modal #verticallyCenteredModal alignment="center" id="verticallyCenteredModal">
+  <c-modal-header>
+    <h5 cModalTitle>Request Item Summary</h5>
+    <button [cModalToggle]="verticallyCenteredModal.id" cButtonClose></button>
+  </c-modal-header>
+
+  <c-modal-body>
+
+    <!-- <c-button-group [formGroup]="btnRadioGroup">
+
+        <c-row>
+            <c-col xs="12" sm="6" lg="4" xl="4" class="class-radio" *ngFor="let store of (_stores|async)">
+                <input class="btn-check" formControlName="store" id="radio1" type="radio" value="{{store.store_id}}" />
+                <label (click)="setRadioValue(store.store_id)" cButton cFormCheckLabel for="radio1"
+                    variant="ghost">{{store.store_name}}</label>  
+            </c-col>
+        </c-row>
+    </c-button-group> -->
+    <form [formGroup]="btnRadioGroup">
+        <c-input-group>
+            <span cInputGroupText>Store Destination</span>
+            <select aria-label="Store Destination" cSelect formControlName="store">
+                <option>...</option>
+                <option *ngFor="let store of (_stores|async)" value="{{store.store_id}}">{{store.store_name}}</option>
+            </select>
+        </c-input-group>
+    </form>
+
+    <br>
+
+    <table cTable>
+        <thead>
+            <tr>
+                <th scope="col"><b>Prod Date</b></th>
+                <th scope="col"><b>Item Name</b></th>
+                <th scope="col"><b>Delivery Qty</b></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr *ngFor="let item of (_cartItems|async)">
+                <td>{{item.production_date | date:'MM/dd/yy'}}</td>
+                <td>{{item.item_name}}</td>
+                <td>{{item.item_del_qty +' '+ item.item_unit}}</td>
+            </tr>
+        </tbody>
+    </table>
+  </c-modal-body>
+
+  <c-modal-footer>
+    <button [cModalToggle]="verticallyCenteredModal.id" cButton color="fourth">
+      Close
+    </button>
+    <button cButton color="secondary" [disabled]="!btnRadioGroup.valid || !(this._cartItems|async).length">Send Request</button>
+  </c-modal-footer>
+</c-modal>
+
+
+<c-toaster class="p-3" position="fixed" [placement]="placement"></c-toaster>

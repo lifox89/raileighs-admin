@@ -17,10 +17,11 @@ export class CommissaryService {
 
   private user: user;
   private commissary = new BehaviorSubject<commissary[]>(undefined);
+  private storeRequest = new BehaviorSubject<any[]>(undefined);
 
   constructor( private firestore: AngularFirestore) { 
     this.user = JSON.parse(localStorage.getItem('user'));
-    
+    this.storeRequest.next([]);
   }
 
   // GET SERVICES
@@ -28,6 +29,9 @@ export class CommissaryService {
     return this.commissary.asObservable();
   }
 
+  getRequestData(){
+    return this.storeRequest.asObservable();
+  }
   // FETCH SERVICES
   fetchCommissary(){
     
@@ -65,8 +69,12 @@ export class CommissaryService {
 
                     if (sub) {
 
+                      let temp:any = sub.payload.data();
+
+                      temp.item_id = sub.payload.id;
+
                       const item = {
-                        item_data : sub.payload.data(),
+                        item_data : temp,
                         item_log : []
                       };
 
@@ -79,9 +87,13 @@ export class CommissaryService {
                                     .subscribe(log => {
                                       if (log) {
                                         let array = [];
-
+                                        
                                         log.forEach( elem => {
-                                          array.push(elem.payload.doc.data());
+
+                                          let data : any = elem.payload.doc.data();
+                                          data.log_id = elem.payload.doc.id;
+
+                                          array.push(data);
                                         });
 
                                         item.item_log = array;
@@ -97,6 +109,32 @@ export class CommissaryService {
   }
 
   // ADD SERVICES
+  resetCart(){
+    this.storeRequest.next([]);
+  }
+
+  addtoCart( reqData:any){
+
+    const currentValue = this.storeRequest.value;
+
+    let ret = currentValue.find( elem => {
+      if (elem.item_log_id === reqData.item_log_id) {
+        elem.item_del_qty += reqData.item_del_qty;
+      }
+      return (elem.item_log_id === reqData.item_log_id);
+    });
+    
+    let upd = [];
+
+    if (ret) {
+      upd = currentValue;
+    }else{
+      upd = [...currentValue, reqData];
+    }
+
+    this.storeRequest.next(upd);
+  }
+
 
   async addYield(dat:any, commId:string){
     return new Promise((resolve,reject)=> {
@@ -111,6 +149,7 @@ export class CommissaryService {
                         item_unit : dat.item_unit,
                         transaction_time: new Date().getTime(),
                         transaction_type: 'credit',
+                        item_del_qty: 0,
                       };
 
                       this.firestore.collection('servidor_commissary').doc(commId)
@@ -138,6 +177,7 @@ export class CommissaryService {
       item_added: new Date().getTime(),
       item_qty: item.item_qty,
       item_unit: item.item_unit,
+      inactive: false,
     }
 
     return new Promise((resolve,reject)=>{
@@ -160,6 +200,7 @@ export class CommissaryService {
                                         item_unit : item.item_unit,
                                         transaction_time: new Date().getTime(),
                                         transaction_type: 'credit',
+                                        item_del_qty: 0,
                                       };
 
                                       this.firestore.collection('servidor_commissary').doc(commId)

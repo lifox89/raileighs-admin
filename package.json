@@ -41,6 +41,7 @@
     "firebase": "^9.10.0",
     "mat-table-exporter": "^10.2.4",
     "moment": "^2.29.4",
+    "ng2-search-filter": "^0.5.1",
     "ngx-perfect-scrollbar": "^10.1.1",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",

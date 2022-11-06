@@ -7,10 +7,31 @@
     padding-top: 1em;
 }
 
+.class-radio{
+    text-align: center;
+
+    .btn{
+        width: 100% !important;
+    }
+}
+
 .log-credit{
     text-align: right;
     font-weight: bold;
     color: green !important;
+}
+
+.body-log{
+    overflow-y: hidden !important;
+}
+
+.table-select{
+    max-height: 8em !important;
+    overflow-y: auto;
+}
+
+.header-qty{
+    text-align: right;
 }
 
 .log-debit{

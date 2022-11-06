@@ -7,6 +7,12 @@ export enum collections {
     servidor_users,
 }
 
+export enum EventTypes {
+    SUCCESS = 'SUCCESS',
+    ERROR = 'ERROR',
+    LOADING = 'LOADING',
+}
+
 
 export enum order_type {
     DINE_IN = 'dine_in',
@@ -19,5 +25,6 @@ export const units:string[] = [
     'g',
     'pcs',
     'ml',
-    'pack'
+    'packs'
 ]
+

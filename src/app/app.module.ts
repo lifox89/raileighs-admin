@@ -47,6 +47,7 @@ import {
   SharedModule,
   SidebarModule,
   TabsModule,
+  ToastModule,
   UtilitiesModule,
 } from '@coreui/angular';
 
@@ -57,6 +58,7 @@ import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideFunctions,getFunctions } from '@angular/fire/functions';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { UtilToastComponent } from "src/app/views/utilities/util-toast/util-toast.component";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -69,7 +71,7 @@ const APP_CONTAINERS = [
 ];
 
 @NgModule({
-  declarations: [AppComponent, ...APP_CONTAINERS],
+  declarations: [AppComponent, UtilToastComponent, ...APP_CONTAINERS],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -98,6 +100,7 @@ const APP_CONTAINERS = [
     BadgeModule,
     ListGroupModule,
     CardModule,
+    ToastModule,
 
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),

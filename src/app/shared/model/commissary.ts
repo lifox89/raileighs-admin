@@ -16,5 +16,6 @@ export interface item{
     item_added:number,
     item_name:string,
     item_qty:number,
-    item_unit:string
+    item_unit:string,
+    inactive: boolean
 }

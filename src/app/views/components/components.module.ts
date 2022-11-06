@@ -46,8 +46,7 @@ import { ExpenseTableComponent } from './expense-table/expense-table.component';
 import { ChartsComponent } from './charts/charts.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
 import { ExpensesComponent } from './expenses/expenses.component';
-import { InventoriesComponent } from './inventories/inventories.component';
-import { ManageInventoryComponent } from './manage-inventory/manage-inventory.component';
+
 
 
 @NgModule({
@@ -98,6 +97,8 @@ import { ManageInventoryComponent } from './manage-inventory/manage-inventory.co
   exports: [
     ItemsSummaryComponent,
     OrdersSummaryComponent
-  ]
+  ],
+
+  
 })
 export class ComponentsModule { }

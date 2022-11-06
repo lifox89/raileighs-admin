@@ -1,0 +1,16 @@
+<ng-container class="toast-container">
+    
+        <c-toast-header [closeButton]="closeButton"  [ngClass]="getColor()">
+            <strong>{{title}}</strong>
+        </c-toast-header>
+
+        <c-toast-body #toast [cToastClose]="toast.toast" class="toast-body">
+            <p class="mb-1">{{message}}</p>
+            <!-- <ng-content></ng-content>
+        
+            <c-progress thin>
+                <c-progress-bar [value]="25*(toast.toast?.clock ?? 1)"></c-progress-bar>
+            </c-progress> -->
+        </c-toast-body>
+    
+</ng-container>

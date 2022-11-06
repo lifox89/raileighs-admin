@@ -9,13 +9,16 @@ import { GridModule,
          BadgeModule,
          TableModule,
          TooltipModule,
+         ToastModule,
          ButtonModule } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
-
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
+import { SortPipe } from "src/app/shared/pipes/sort.pipe";
+import { MatRadioModule } from "@angular/material/radio";
 
 
 @NgModule({
-  declarations: [ ManageInventoryComponent ],
+  declarations: [ ManageInventoryComponent, SortPipe ],
   imports: [
     CommonModule,
     FormsModule, 
@@ -29,6 +32,11 @@ import { IconModule } from '@coreui/icons-angular';
     TableModule,
     IconModule,
     TooltipModule,
-  ]
+    Ng2SearchPipeModule,
+    MatRadioModule,
+    ToastModule
+  ],
+
+  providers:[SortPipe]
 })
 export class ManageInventoryModule { }
