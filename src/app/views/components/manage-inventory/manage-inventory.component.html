@@ -3,7 +3,7 @@
         <c-row>
             <c-col xs="5" sm="3" lg="3" class="inventory-header"><h5><b>{{_commId | uppercase}}</b></h5></c-col>
             <c-col xs="7" sm="9" lg="9">
-                <button cButton color="secondary" class="header-button" [cModalToggle]="verticallyCenteredModal.id">
+                <button cButton color="secondary" class="header-button" (click)="viewModal()">
                     <svg cIcon name="cil-cart" size="xl" title="Barcode"></svg>
                     <c-badge color="danger" class="cart-badge" shape="rounded-pill">{{ (_cartItems | async).length }}</c-badge>
                 </button>
@@ -191,7 +191,7 @@
 </c-card>
 
 
-<c-modal #verticallyCenteredModal alignment="center" id="verticallyCenteredModal">
+<c-modal #verticallyCenteredModal alignment="center" id="verticallyCenteredModal" [visible]="_viewBol">
   <c-modal-header>
     <h5 cModalTitle>Request Item Summary</h5>
     <button [cModalToggle]="verticallyCenteredModal.id" cButtonClose></button>
@@ -244,7 +244,7 @@
     <button [cModalToggle]="verticallyCenteredModal.id" cButton color="fourth">
       Close
     </button>
-    <button cButton color="secondary" [disabled]="!btnRadioGroup.valid || !(this._cartItems|async).length">Send Request</button>
+    <button cButton color="secondary" [disabled]="!btnRadioGroup.valid || !(this._cartItems|async).length" (click)="SendRequest()">Send Request</button>
   </c-modal-footer>
 </c-modal>
 

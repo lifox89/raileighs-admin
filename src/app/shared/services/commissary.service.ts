@@ -113,6 +113,34 @@ export class CommissaryService {
     this.storeRequest.next([]);
   }
 
+  async sendStoreRequest(comm:any){
+
+    const value : any  = this.storeRequest.value;
+    
+    return new Promise((resolve,reject)=>{
+
+      const data = {
+        request_time : new Date().getTime(),
+        items: value,
+      };
+
+      this.firestore.collection('servidor_commissary').doc(value[0].commissary_id)
+                    .collection('store_requests').doc(comm.store)
+                    .collection('request_items').add(data)
+                    .then(()=>{
+                      this.resetCart();
+                      resolve(true);
+                    })
+                    .catch((er)=>{
+                      console.log(er);
+                      reject(false);
+                    })
+    });
+
+    
+  }
+
+
   addtoCart( reqData:any){
 
     const currentValue = this.storeRequest.value;
@@ -123,7 +151,7 @@ export class CommissaryService {
       }
       return (elem.item_log_id === reqData.item_log_id);
     });
-    
+
     let upd = [];
 
     if (ret) {
@@ -253,6 +281,19 @@ export class CommissaryService {
       this.firestore.collection('servidor_commissary').doc(data.commissary_name)
                     .set(data)
                     .then(()=>{
+                      
+                      storeArr.forEach(elem => {
+                        this.firestore.collection('servidor_commissary').doc(data.commissary_name)
+                                      .collection('store_requests').doc(elem).set({});
+                      });
+
+                      
+                      this.firestore.collection('servidor_commissary').doc(data.commissary_name)
+                                    .collection('items_inventory').add({});
+
+                      this.firestore.collection('servidor_commissary').doc(data.commissary_name)
+                                    .collection('menu_components').add({});
+
                       resolve(true);
                     })
                     .catch(()=>{
@@ -279,6 +320,20 @@ export class CommissaryService {
       this.firestore.collection('servidor_commissary').doc(newCom.comm_id)
                     .update({commissary_stores: storeArr})
                     .then(()=>{
+
+                      storeArr.forEach(elem=>{
+                        this.firestore.collection('servidor_commissary').doc(newCom.comm_id)
+                                      .collection('store_requests').doc(elem)
+                                      .snapshotChanges()
+                                      .subscribe(sub=>{
+                                          if ( sub && !sub.payload.exists) {
+                                            this.firestore.collection('servidor_commissary').doc(newCom.comm_id)
+                                                          .collection('store_requests').doc(elem).set({});
+                                          }
+                                      });
+                      });
+
+
                       resolve(true);
                     })
                     .catch(()=>{

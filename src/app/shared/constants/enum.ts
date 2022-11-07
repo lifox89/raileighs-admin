@@ -13,6 +13,13 @@ export enum EventTypes {
     LOADING = 'LOADING',
 }
 
+export enum status {
+    PENDING     = 'PENDING',
+    RECEIVED    = 'RECEIVED',
+    REJECTED    = 'REJECTED',
+    COMPLETED   = 'COMPLETED'
+}
+
 
 export enum order_type {
     DINE_IN = 'dine_in',

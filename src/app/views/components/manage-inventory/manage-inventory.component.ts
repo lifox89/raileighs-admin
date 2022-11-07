@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { EventTypes, units } from "src/app/shared/constants/enum";
+import { EventTypes, units, status } from "src/app/shared/constants/enum";
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { CommissaryService } from 'src/app/shared/services/commissary.service';
 import { Router } from '@angular/router';
@@ -35,7 +35,7 @@ export class ManageInventoryComponent implements OnInit {
   _logId:string = '';
   _itemId:string;
   _logItem:any;
-
+  _viewBol:boolean;
   _cartItems: Observable<any[]>;
   _stores: Observable<any[]>;
 
@@ -107,6 +107,10 @@ export class ManageInventoryComponent implements OnInit {
 
   }
 
+  viewModal(){
+    this._viewBol = true;
+  }
+
   setRadioValue(value: string): void {
     this.btnRadioGroup.setValue({ store : value });
   }
@@ -133,7 +137,6 @@ export class ManageInventoryComponent implements OnInit {
 
   addCart(){
 
-
     let dat = this.ngForm.value;
 
     const reqData = {
@@ -144,6 +147,8 @@ export class ManageInventoryComponent implements OnInit {
       item_del_qty: this._addCart,
       item_unit: dat.item_unit,
       production_date: this._logItem.transaction_time,
+      status: status.PENDING,
+      rejection_reason: ''
     };
 
     this.commServ.addtoCart(reqData);
@@ -153,7 +158,17 @@ export class ManageInventoryComponent implements OnInit {
     this._logItem = null;
 
     this.addToast(EventTypes.SUCCESS,'Item added to request cart, actual deduction will be final upon sending request.');
-    console.log(this._cartItems);
+  }
+
+  SendRequest(){
+    this.commServ.sendStoreRequest(this.btnRadioGroup.value)
+        .then(()=>{
+          this.addToast(EventTypes.SUCCESS,'Cart items submitted, please proceed with delivery');
+        })
+        .catch(()=>{
+          this.addToast(EventTypes.ERROR,'Something went wrong, please try again!');
+        });
+    this._viewBol = false;
   }
 
   setItem(item:any){
