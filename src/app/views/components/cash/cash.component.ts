@@ -1,20 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import {NgbCalendar, NgbInputDatepickerConfig} from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgbCalendar, NgbInputDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
 import { ReportsService } from 'src/app/shared/services/reports.service';
-import { debounceTime, Observable } from 'rxjs';
-import { MatSnackBar} from '@angular/material/snack-bar';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { order_type } from "src/app/shared/constants/enum";
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 
-@UntilDestroy()
 @Component({
-  selector: 'app-reports',
-  templateUrl: './reports.component.html',
-  styleUrls: ['./reports.component.scss']
+  selector: 'app-cash',
+  templateUrl: './cash.component.html',
+  styleUrls: ['./cash.component.scss']
 })
-export class ReportsComponent implements OnInit {
+
+export class CashComponent implements OnInit {
 
   fromDate: any;
   targetDate: any;
@@ -24,27 +21,18 @@ export class ReportsComponent implements OnInit {
 
   _generated: boolean = false;
   _total: number = 0;
+  _show:boolean = false;
 
   dataLength: any[] = [];
 
-  ordersRange : Observable<any[]>;
   franchiseStores: Observable<any[]>;
+  franchiseCashHistory: Observable<any[]>;
 
-  dine : string; 
-  panda : string;
+  constructor(public  config: NgbInputDatepickerConfig,
+              private snackBar:    MatSnackBar,
+              public  calendar:    NgbCalendar,
+              public  reportServ: ReportsService) { 
 
-  public ngForm: FormGroup;
-
-  constructor(  private reportServ:  ReportsService,
-                private snackBar:    MatSnackBar,
-                private formBuilder: FormBuilder,
-                public  config:      NgbInputDatepickerConfig, 
-                public  calendar:    NgbCalendar ) {
-
-    this.dine  = order_type.DINE_IN;
-    this.panda = order_type.PANDA;
-
-    this.ordersRange = this.reportServ.getSales_range();
     config.minDate = {year: 2020, month: 1, day: 1};
     config.maxDate = {year: 2099, month: 12, day: 31};
     config.outsideDays = 'hidden';
@@ -53,25 +41,8 @@ export class ReportsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.reportServ.initRange();
     this.franchiseStores = this.reportServ.getStores();
-
-    this.ngForm = this.formBuilder.group({switchbol: new FormControl('')}); 
-
-    console.log(this.ngForm.value);
-  }
-
-  openSnackBar(message: string) {
-    this.snackBar.open(message,null,{duration: 5000});
-  }
-
-  setTotal(event:any){
-    this.ordersRange.pipe(untilDestroyed(this),debounceTime(500))
-                    .subscribe( stores => {   
-      if (stores && stores[event.index]) {
-        this._total = stores[event.index].sales_today;
-      }
-    });
+    this.franchiseCashHistory = this.reportServ.getCashRange();
   }
 
 
@@ -97,24 +68,27 @@ export class ReportsComponent implements OnInit {
     this.setTotal({index:0}); // Trigger Total
   }
 
-  checkIndex(idx:any){
-    let res : boolean = false;
+  setTotal(event:any){
+    // this._total = 0;
 
-    if (idx == 0) {
-      res = true;
-    }
-
-    return res;
+    // this.franchiseCashHistory.pipe(untilDestroyed(this),debounceTime(500))
+    //                       .subscribe( stores => {   
+    //   if (stores && stores[event.index]) {
+    //     this._total = stores[event.index].expense_today;
+    //   }
+    // });
   }
 
+
   singleDate( date: any) {
-    this.reportServ.fetchSales_today(this.targetDate);
+    this.reportServ.fetchCash(null, date);
   }
 
   dateRange( fromDate: any, targetDate: any){
 
     if ( (fromDate && targetDate) && (fromDate < targetDate)) {
-      this.reportServ.fetchSales_range(fromDate,targetDate);
+
+      this.reportServ.fetchCash(fromDate,targetDate);
       
     }else{
       this.openSnackBar('Invalid date range, please fill up correctly!');
@@ -127,7 +101,6 @@ export class ReportsComponent implements OnInit {
     let str = String(date.year) + 
               String(date.month < 10 ? `0${date.month}`.padStart(2,"0") : `${date.month}`) + 
               String(date.day < 10 ? `0${date.day}`.padStart(2,"0") : `${date.day}`);
-    console.log(str);
     this.targetDate = new Date(moment(str,'YYYYMMDD').toDate()).getTime();
   }
 
@@ -138,5 +111,9 @@ export class ReportsComponent implements OnInit {
     this.fromDate = new Date(moment(str,'YYYYMMDD').toDate()).getTime();
   }
 
- 
+
+  openSnackBar(message: string) {
+    this.snackBar.open(message,null,{duration: 5000});
+  }
+
 }

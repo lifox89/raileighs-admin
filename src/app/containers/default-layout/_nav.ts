@@ -20,6 +20,11 @@ export const navItems: INavData[] = [
         url: '/home/components/expenses',
         iconComponent: { name: 'cil-dollar' },
       },
+      {
+        name: 'Cash History',
+        url: '/home/components/cash',
+        iconComponent: { name: 'cil-dollar' },
+      }
       // {
       //   name: 'Charts',
       //   url: '/components/charts',

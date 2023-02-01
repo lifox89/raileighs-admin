@@ -1,0 +1,40 @@
+
+p{
+    background-color: lightgray;
+    padding: .5em;
+    border-radius: 5px;
+    margin-top: .5em;
+    font-size: .8em;
+    text-align: center;
+}
+
+table {
+    width: 100%;
+}
+
+
+.transaction-debit{
+    color: red;
+    font-weight: bold;
+}
+
+.transaction-credit{
+    color: green;
+    font-weight: bold;
+}
+
+.summary-total{
+    text-align: right;
+}
+
+.order-total {
+    text-align: right !important;
+}
+
+.last-col{
+    padding-right: 0px !important;
+}
+
+.button-download{
+    margin-top: 1em;
+}

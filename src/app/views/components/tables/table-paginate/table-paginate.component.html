@@ -13,19 +13,29 @@
         <td mat-cell *matCellDef="let element"> {{element.order_time | date:'MMM dd - HH:mm'}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="payment_type" *ngIf="checkOrderType()">
+      <ng-container matColumnDef="payment_type" *ngIf="checkOrderType()">  <!-- For Panda Columns -->
         <th mat-header-cell *matHeaderCellDef> Payment Type </th>
         <td mat-cell *matCellDef="let element"> {{element.payment_type | titlecase }} </td>
       </ng-container>
   
-      <ng-container matColumnDef="payment_reference" *ngIf="checkOrderType()">
+      <ng-container matColumnDef="payment_reference" *ngIf="checkOrderType()"> <!-- For Panda Columns -->
         <th mat-header-cell *matHeaderCellDef> Payment Ref </th>
         <td mat-cell *matCellDef="let element"> {{element.payment_reference }} </td>
       </ng-container>
 
-      <ng-container matColumnDef="order_tableno" *ngIf="!checkOrderType()">
+      <ng-container matColumnDef="order_tableno" *ngIf="!checkOrderType()"> <!-- For Panda Columns -->
         <th mat-header-cell *matHeaderCellDef> Order Reference</th>
         <td mat-cell *matCellDef="let element"> {{element.order_tableno }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="order_discount" *ngIf="checkOrderType()">
+        <th mat-header-cell *matHeaderCellDef> Discount</th>
+        <td mat-cell *matCellDef="let element"> {{element.order_discount}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="order_discount_type" *ngIf="checkOrderType()">
+        <th mat-header-cell *matHeaderCellDef> Discount Type</th>
+        <td mat-cell *matCellDef="let element"> {{element.order_discount_type | titlecase }} </td>
       </ng-container>
 
       <ng-container matColumnDef="order_total">

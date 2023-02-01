@@ -2,10 +2,7 @@
     <form class="row">
 
         <div class="col-4">
-            <c-form-check sizing="xl" switch color="secondary" ngModel="switchbol">
-                <input cFormCheckInput type="checkbox" (click)="toggleSwitch()" />
-                <label cFormCheckLabel>{{ rangeText }}</label>
-            </c-form-check>
+            <mat-slide-toggle (click)="toggleSwitch()"> {{rangeText}}</mat-slide-toggle>
         </div>
         <div class="col-4" *ngIf="!switchbol"></div>
         <div class="col-4 row-cols-sm-auto picker" *ngIf="!switchbol">

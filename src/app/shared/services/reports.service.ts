@@ -19,6 +19,7 @@ export class ReportsService {
 
   private franchiseOrdersRange   = new BehaviorSubject<any[]>(undefined);
   private franchiseExpensesRange = new BehaviorSubject<any[]>(undefined);
+  private franchiseCashRange     = new BehaviorSubject<any[]>(undefined);
 
   private _spinnerState          = new BehaviorSubject<boolean>(undefined);
 
@@ -151,6 +152,10 @@ export class ReportsService {
     return this.franchiseExpensesRange.asObservable();
   }
 
+  public getCashRange(){
+    return this.franchiseCashRange.asObservable();
+  }
+
 
 
   // FETCH METHODS
@@ -172,15 +177,72 @@ export class ReportsService {
                           store_id      : value.store_id,
                           store_name    : value.store_name,
                           store_currency: value.store_currency,
+                          inactive:       value.inactive ? true : false,
                         };
                         
                         if (!stores.find( found => {return (found.store_id == store)})) {
-                          stores.push(store);
+
+                          !store.inactive ? stores.push(store) : store = null;
                         }
                       });
       });
 
       this.franchiseStores.next(stores);
+    }
+  }
+
+  public fetchCash(from: any, target: any){
+
+    let cash : Array<any> = [];
+    let start: any;
+    let end: any;
+
+    if (from) { // If not null, range date is requested
+      start = this.startofDay(from);
+      end   = this.endofDay(target);
+    }else{ // For single day request
+      start = this.startofDay(target);
+      end   = this.endofDay(target);
+    }
+
+    if (target) {
+      this.franchiseCashRange.next([]);
+    }
+
+    this.user = JSON.parse(localStorage.getItem('user'));
+
+    if (this.user) {
+
+      this.user.stores.forEach(store=>{
+        this.firestore.collection('servidor_store_bank').doc(store)
+                      .collection('transaction_logs',ref => ref.orderBy('transaction_time')
+                      .where("transaction_time",">=", start)
+                      .where("transaction_time","<=", end))
+                      .get().pipe(untilDestroyed(this))
+                      .subscribe( data => {
+
+                        if (data) {
+
+                          let temp = {
+                            store_id : store,
+                            cash_history: [],
+                          };
+  
+                          data.forEach(dat => {
+                            let item:any = dat.data();
+                            temp.cash_history.push(dat.data());
+                          });
+  
+                          if (!cash.find( found => {
+                            return (found.store_id == temp.store_id)})) {
+                              cash.push(temp);
+                          }
+                        }
+                        
+                      });
+        });
+        
+        this.franchiseCashRange.next(cash);
     }
   }
 
@@ -273,7 +335,7 @@ export class ReportsService {
                         data.forEach(dat => {
                           let order:any = dat.data();
                           temp.sales_today += order.order_total;
-                          temp.orders.push(dat.data());
+                          temp.orders.push(order);
                         });
 
                         if (!orders.find( found => {

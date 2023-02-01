@@ -31,7 +31,7 @@ export class TablePaginateComponent implements OnInit, AfterViewInit {
 
   public ordersRange : Observable<any[]>;
   
-  public orderColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference','order_total'];
+  public orderColumns: string[] = ['position', 'order_time', 'payment_type', 'payment_reference', 'order_discount', 'order_discount_type', 'order_total'];
   public pandaColumns: string[] = ['position', 'order_time', 'order_tableno','order_total'];
   public itemColumns:  string[] = ['position', 'item_name', 'item_qty'];
 

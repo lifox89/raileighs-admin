@@ -1,5 +1,5 @@
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbCalendar, NgbInputDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -103,12 +103,16 @@ export class ExpensesComponent implements OnInit {
   }
 
   onDateSelectTarget(date:any){
-    let str = String(date.year) + String(date.month) + String(date.day);
+    let str = String(date.year) + 
+              String(date.month < 10 ? `0${date.month}`.padStart(2,"0") : `${date.month}`) + 
+              String(date.day < 10 ? `0${date.day}`.padStart(2,"0") : `${date.day}`);
     this.targetDate = new Date(moment(str,'YYYYMMDD').toDate()).getTime();
   }
 
   onDateSelectFrom(date:any){
-    let str = String(date.year) + String(date.month) + String(date.day);
+    let str = String(date.year) + 
+              String(date.month < 10 ? `0${date.month}`.padStart(2,"0") : `${date.month}`) + 
+              String(date.day < 10 ? `0${date.day}`.padStart(2,"0") : `${date.day}`);
     this.fromDate = new Date(moment(str,'YYYYMMDD').toDate()).getTime();
   }
 

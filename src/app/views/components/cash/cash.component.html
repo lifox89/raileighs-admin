@@ -1,11 +1,9 @@
 <div>
-    
     <form class="row">
 
-        <div class="col-4"> 
+        <div class="col-4">
             <mat-slide-toggle (click)="toggleSwitch()"> {{rangeText}}</mat-slide-toggle>
         </div>
-        
         <div class="col-4" *ngIf="!switchbol"></div>
         <div class="col-4 row-cols-sm-auto picker" *ngIf="!switchbol">
             <div class="input-group">
@@ -34,20 +32,17 @@
             <c-card>
                 <c-card-header>
                     <div class="row">
-                        <div class="col-6">Sales Summary 
+                        <div class="col-6">Cash History
                             <span>{{fromDate | date:'MMM dd, yyyy'}}</span>
                             <span *ngIf="switchbol && ( fromDate && targetDate )"> to </span>
                             <span>{{targetDate | date:'MMM dd, yyyy'}}</span>
                         </div>
-                        <div class="col-6 summary-total" *ngIf="_total">Total Sales: {{ _total | currency:'Php '}}</div>
                     </div>
                 </c-card-header>
                 <c-card-body>
                     <mat-tab-group (selectedTabChange)="setTotal($event)" dynamicHeight>
                         <mat-tab *ngFor="let store of (franchiseStores | async)" label="{{store.store_name}}">
-                            <app-table-paginate [orderType]="dine"  [storeId]="store.store_id" [storeName]="store.store_name"></app-table-paginate>
-                            <br>
-                            <app-table-paginate [orderType]="panda" [storeId]="store.store_id" [storeName]="store.store_name"></app-table-paginate>
+                            <app-cash-table [storeId]="store.store_id" [storeName]="store.store_name"></app-cash-table>
                         </mat-tab>
                     </mat-tab-group>
                 </c-card-body>

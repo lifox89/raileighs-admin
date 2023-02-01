@@ -116,11 +116,12 @@ export class CommissaryService {
   async sendStoreRequest(comm:any){
 
     const value : any  = this.storeRequest.value;
-    
+
     return new Promise((resolve,reject)=>{
 
       const data = {
         request_time : new Date().getTime(),
+        request_status: 'PENDING',
         items: value,
       };
 

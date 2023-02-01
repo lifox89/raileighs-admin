@@ -100,9 +100,6 @@ $coreui-free-angular-admin-template-theme: mat.define-light-theme((
 // that you are using.
 @include mat.all-component-themes($coreui-free-angular-admin-template-theme);
 
-
-
-
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
@@ -234,6 +231,14 @@ th.mat-header-cell:last-of-type{
   --info:      #39f;
   --warning:   #f9b115;
   --danger:    #e55353;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-bar {
+  background-color: gray;
+}
+
+.mat-slide-toggle.mat-checked .mat-slide-toggle-thumb {
+  background-color: var(--secondary);
 }
 
 .row{

@@ -30,6 +30,7 @@ import { ReportsComponent } from './reports/reports.component';
 
 
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatInputModule } from "@angular/material/input";
 import { MatPaginatorModule } from "@angular/material/paginator";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
@@ -41,11 +42,13 @@ import { MatTableExporterModule } from 'mat-table-exporter';
 import { ModalModule, BadgeModule } from '@coreui/angular';
 
 
-import { TablePaginateComponent } from './table-paginate/table-paginate.component';
-import { ExpenseTableComponent } from './expense-table/expense-table.component';
+import { TablePaginateComponent } from './tables/table-paginate/table-paginate.component';
+import { ExpenseTableComponent } from './tables/expense-table/expense-table.component';
+import { CashTableComponent } from "./tables/cash-table/cash-table.component";
 import { ChartsComponent } from './charts/charts.component';
 import { ForecastsComponent } from './forecasts/forecasts.component';
 import { ExpensesComponent } from './expenses/expenses.component';
+import { CashComponent } from './cash/cash.component';
 
 
 
@@ -59,6 +62,8 @@ import { ExpensesComponent } from './expenses/expenses.component';
     ForecastsComponent,
     ExpensesComponent,
     ExpenseTableComponent,
+    CashComponent,
+    CashTableComponent,
    ],
   imports: [
     CommonModule,
@@ -81,6 +86,7 @@ import { ExpensesComponent } from './expenses/expenses.component';
     NgbDatepickerModule,
     FormModule,
     MatAutocompleteModule,
+    MatSlideToggleModule,
     MatInputModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,

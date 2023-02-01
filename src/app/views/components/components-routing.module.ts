@@ -8,6 +8,7 @@ import { OrdersSummaryComponent } from './orders-summary/orders-summary.componen
 import { ReportsComponent } from "./reports/reports.component";
 import { InventoriesComponent } from "./inventories/inventories.component";
 import { ManageInventoryComponent } from "./manage-inventory/manage-inventory.component";
+import { CashComponent } from './cash/cash.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,13 @@ const routes: Routes = [
         component: ExpensesComponent,
         data: {
           title: $localize`Expenses`
+        },
+      },
+      {
+        path: 'cash',
+        component: CashComponent,
+        data: {
+          title: $localize`Cash History`
         },
       },
       {
